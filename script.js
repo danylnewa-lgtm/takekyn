@@ -1,26 +1,24 @@
-const tg = window.Telegram?.WebApp;
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const startBtn = document.getElementById("startBtn");
 
-if (tg) {
+// Telegram init (безопасно)
+if (window.Telegram && window.Telegram.WebApp) {
+  const tg = window.Telegram.WebApp;
   tg.ready();
   tg.expand();
   tg.disableVerticalSwipes();
 }
 
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
-const startBtn = document.getElementById("startBtn");
-
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
-  drawInitial(); // перерисовка после resize
 }
 
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 const radius = 150;
-
 let angle = 0;
 let speed = 0.02;
 let running = false;
@@ -29,13 +27,13 @@ const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
 let carLoaded = false;
-carImg.onload = () => {
+carImg.onload = function () {
   carLoaded = true;
   drawInitial();
 };
 
-carImg.onerror = () => {
-  console.error("PNG не загружается. Проверь путь.");
+carImg.onerror = function () {
+  console.error("Ошибка загрузки car.png");
 };
 
 function getCenter() {
@@ -97,8 +95,8 @@ function update() {
 
   requestAnimationFrame(update);
 }
-}
-startBtn.addEventListener("click", () => {
+
+startBtn.addEventListener("click", function () {
   if (!carLoaded) return;
   running = true;
   update();
