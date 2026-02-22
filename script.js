@@ -40,13 +40,22 @@ function drawTrack() {
 
 // Рисуем машину
 function drawCar(x, y, rotation) {
-  if (!carLoaded) return; // если PNG ещё не загружен — пропускаем
-  const size = 60;
+  if (!carLoaded) return;
+
+  // Масштабируем PNG
+  const scale = 0.5; // уменьшить размер при необходимости
+  const imgWidth = carImg.width * scale;
+  const imgHeight = carImg.height * scale;
 
   ctx.save();
   ctx.translate(x, y);
-  ctx.rotate(rotation + Math.PI / 2); // повернуть по движению
-  ctx.drawImage(carImg, -size / 2, -size / 2, size, size);
+
+  // Поворот по касательной траектории
+  ctx.rotate(rotation); // машина боком по направлению движения
+
+  // Рисуем PNG с правильными пропорциями
+  ctx.drawImage(carImg, -imgWidth / 2, -imgHeight / 2, imgWidth, imgHeight);
+
   ctx.restore();
 }
 
