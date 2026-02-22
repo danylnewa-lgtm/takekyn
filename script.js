@@ -20,7 +20,7 @@ resizeCanvas();
 
 const radius = 150;
 let angle = 0;
-let speed = 0.02;
+let speed = 0.002;
 let running = false;
 
 const carImg = new Image();
