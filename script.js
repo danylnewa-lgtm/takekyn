@@ -1,31 +1,101 @@
+const tg = window.Telegram.WebApp;
+
+// Telegram init
+tg.ready();
+tg.expand();              // fullscreen
+tg.disableVerticalSwipes(); // отключаем свайпы
+
+// Можно настроить цвета под тему Telegram
+document.body.style.backgroundColor = tg.themeParams.bg_color || "#111";
+
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const startBtn = document.getElementById("startBtn");
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
 
-const centerX = canvas.width / 2;
-const centerY = canvas.height / 2;
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
+
+const center = () => ({
+  x: canvas.width / 2,
+  y: canvas.height / 2
+});
+
 const radius = 150;
 
 let angle = 0;
 let speed = 0.02;
 let running = false;
 
-// Загружаем PNG-машину
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
-// Флаг загрузки
 let carLoaded = false;
 carImg.onload = () => {
-  console.log("Car image loaded");
   carLoaded = true;
   drawInitial();
 };
 
-carImg.onerror = () => {
+function drawTrack() {
+  const c = center();
+  ctx.beginPath();
+  ctx.arc(c.x, c.y, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 4;
+  ctx.stroke();
+}
+
+function drawCar(x, y, rotation) {
+  if (!carLoaded) return;
+
+  const scale = 0.5;
+  const w = carImg.width * scale;
+  const h = carImg.height * scale;
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+  ctx.drawImage(carImg, -w / 2, -h / 2, w, h);
+  ctx.restore();
+}
+
+function drawInitial() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawTrack();
+
+  const c = center();
+  const x = c.x + radius * Math.cos(angle);
+  const y = c.y + radius * Math.sin(angle);
+
+  drawCar(x, y, angle);
+}
+
+function update() {
+  if (!running) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawTrack();
+
+  const c = center();
+  const x = c.x + radius * Math.cos(angle);
+  const y = c.y + radius * Math.sin(angle);
+
+  drawCar(x, y, angle);
+
+  angle += speed;
+
+  requestAnimationFrame(update);
+}
+
+startBtn.addEventListener("click", () => {
+  if (!carLoaded) return;
+  running = true;
+  update();
+});
   console.error("Не удалось загрузить car.png. Проверь путь.");
 };
 
