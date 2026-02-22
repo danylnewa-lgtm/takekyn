@@ -97,7 +97,7 @@ function update() {
 
   requestAnimationFrame(update);
 }
-
+}
 startBtn.addEventListener("click", () => {
   if (!carLoaded) return;
   running = true;
