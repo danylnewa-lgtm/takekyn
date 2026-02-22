@@ -55,7 +55,7 @@ function drawTrack() {
 function drawCar(x, y, rotation) {
   if (!carLoaded) return;
 
-  const scale = 0.5;
+  const scale = 0.25;
   const w = carImg.width * scale;
   const h = carImg.height * scale;
 
