@@ -1,14 +1,15 @@
-body {
+html, body {
   margin: 0;
-  background: #111; /* фон страницы */
+  padding: 0;
   overflow: hidden;
-  text-align: center;
+  touch-action: none; /* отключаем жесты */
+  background: #111;
+  height: 100%;
 }
 
 canvas {
-  background: transparent; /* прозрачный фон для Canvas */
   display: block;
-  margin: 0 auto;
+  background: transparent;
 }
 
 button {
@@ -16,7 +17,7 @@ button {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 16px;
-  cursor: pointer;
+  z-index: 10;
 }
