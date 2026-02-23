@@ -24,6 +24,12 @@ body {
   position: relative;
 }
 
+canvas {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
 #stats {
   position: absolute;
   left: 20px;
@@ -41,13 +47,7 @@ body {
   min-width: 120px;
 }
 
-canvas {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-}
-
-#boostBtn {
+#actionBtn {
   position: absolute;
   right: 40px;
   bottom: 40px;
