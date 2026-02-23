@@ -4,7 +4,6 @@ const tg = window.Telegram.WebApp;
 tg.ready();
 tg.expand();  // fullscreen
 
-// Настройка фона под тему Telegram
 document.body.style.backgroundColor = tg.themeParams.bg_color || "#111";
 
 const canvas = document.getElementById("gameCanvas");
@@ -15,14 +14,13 @@ function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
 // ===== Настройки =====
-const baseRadius = 150;   // базовый радиус для расчёта овала
-const radiusX = baseRadius * 0.8;  // по горизонтали
-const radiusY = baseRadius * 1.2;  // вытянутый по вертикали
+const baseRadius = 150;
+let radiusX = baseRadius * 0.4; // уменьшено в 2 раза
+let radiusY = baseRadius * 0.6; // уменьшено в 2 раза, вытянуто по вертикали
 
 let angle = 0;
 let speed = 0.02;
@@ -30,7 +28,7 @@ let running = false;
 
 // ===== Картинка машинки =====
 const carImg = new Image();
-carImg.src = "assets/images/car.png"; // Проверь путь или используй полный URL
+carImg.src = "assets/images/car.png"; // проверь путь
 
 let carLoaded = false;
 carImg.onload = () => {
@@ -51,14 +49,14 @@ function drawTrack(centerX, centerY) {
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
   ctx.strokeStyle = "white";
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 2;
   ctx.stroke();
 }
 
 function drawCar(x, y, rotation) {
   if (!carLoaded) return;
 
-  const scale = 0.25; // уменьшенная машинка
+  const scale = 0.125; // уменьшено вдвое (от предыдущей версии 0.25)
   const w = carImg.width * scale;
   const h = carImg.height * scale;
 
@@ -72,8 +70,8 @@ function drawCar(x, y, rotation) {
 function drawInitial() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
+  const centerX = radiusX + 20; // смещение влево (20px от края)
+  const centerY = canvas.height - radiusY - 20; // смещение вниз (20px от низа)
 
   drawTrack(centerX, centerY);
 
@@ -88,8 +86,8 @@ function update() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
+  const centerX = radiusX + 20;
+  const centerY = canvas.height - radiusY - 20;
 
   drawTrack(centerX, centerY);
 
