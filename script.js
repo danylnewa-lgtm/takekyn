@@ -1,65 +1,57 @@
-const canvas = document.getElementById("gameCanvas");
+const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
-const startBtn = document.getElementById("startBtn");
-
-// Telegram init (безопасно)
-if (window.Telegram && window.Telegram.WebApp) {
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
-  tg.disableVerticalSwipes();
-}
 
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-
-window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
-const baseRadius = 150;
-const radiusX = baseRadius * 0.8;   // 4/5 от прежнего
-const radiusY = baseRadius * 0.6;   // можно оставить так же или сделать вытянутым
-const centerX = canvas.width / 2 - radiusX * 0.5;
-const centerY = canvas.height / 2;
-let angle = 0;
-let speed = 0.002;
-let running = false;
-
-const carImg = new Image();
-carImg.src = "assets/images/car.png";
-
-let carLoaded = false;
-carImg.onload = function () {
-  carLoaded = true;
-  drawInitial();
-};
-
-carImg.onerror = function () {
-  console.error("Ошибка загрузки car.png");
-};
-
-function getCenter() {
-  return {
-    x: canvas.width / 2,
-    y: canvas.height / 2
-  };
+// Telegram WebApp
+if (window.Telegram && window.Telegram.WebApp) {
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+  tg.expand();
 }
 
-function drawTrack() {
-  const c = getCenter();
+// ===== Машина =====
+const carImg = new Image();
+carImg.src = "assets/car.png";
+
+let carLoaded = false;
+carImg.onload = () => {
+  carLoaded = true;
+  requestAnimationFrame(update);
+};
+
+// ===== Движение =====
+let angle = 0;
+let speed = 0.02;
+
+// Управление
+document.addEventListener("mousedown", () => speed = 0.04);
+document.addEventListener("mouseup", () => speed = 0.02);
+document.addEventListener("touchstart", () => speed = 0.04);
+document.addEventListener("touchend", () => speed = 0.02);
+
+// ===== Геометрия овала =====
+const baseRadius = 150;
+const radiusX = baseRadius * 0.8;   // 4/5
+const radiusY = baseRadius * 0.6;   // делаем овал
+
+function drawTrack(centerX, centerY) {
   ctx.beginPath();
-  ctx.arc(c.x, c.y, radius, 0, Math.PI * 2);
-  ctx.strokeStyle = "white";
-  ctx.lineWidth = 4;
+  ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+  ctx.strokeStyle = "#444";
+  ctx.lineWidth = 3;
   ctx.stroke();
 }
 
 function drawCar(x, y, rotation) {
   if (!carLoaded) return;
 
-  const scale = 0.25;
+  const scale = 0.25; // уменьшена в 4 раза
   const w = carImg.width * scale;
   const h = carImg.height * scale;
 
@@ -70,37 +62,22 @@ function drawCar(x, y, rotation) {
   ctx.restore();
 }
 
-function drawInitial() {
-  if (!carLoaded) return;
-
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawTrack();
-
-  const c = getCenter();
-  const x = centerX + radiusX * Math.cos(angle);
-  const y = centerY + radiusY * Math.sin(angle);
-  drawCar(x, y, angle);
-}
-
 function update() {
-  if (!running) return;
-
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawTrack();
 
-  const c = getCenter();
-  const x = c.x + radius * Math.cos(angle);
-  const y = c.y + radius * Math.sin(angle);
+  const centerX = canvas.width / 2 - radiusX * 0.5; // смещение влево
+  const centerY = canvas.height / 2;
 
-  drawCar(x, y, angle);
+  drawTrack(centerX, centerY);
 
   angle += speed;
 
+  const x = centerX + radiusX * Math.cos(angle);
+  const y = centerY + radiusY * Math.sin(angle);
+
+  const rotation = angle + Math.PI / 2;
+
+  drawCar(x, y, rotation);
+
   requestAnimationFrame(update);
 }
-
-startBtn.addEventListener("click", function () {
-  if (!carLoaded) return;
-  running = true;
-  update();
-});
