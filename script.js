@@ -4,13 +4,16 @@ const ctx = canvas.getContext("2d");
 const rotateMessage = document.getElementById("rotateMessage");
 const lapsEl = document.getElementById("laps");
 const coinsEl = document.getElementById("coins");
+const boostBtn = document.getElementById("boostBtn");
 
 let width, height;
 let centerX, centerY;
 let radiusX, radiusY;
 
 let angle = 0;
-let speed = 0.02;
+let baseSpeed = 0.02;
+let boostSpeed = 0.06;
+let currentSpeed = baseSpeed;
 
 let laps = 0;
 let coins = 0;
@@ -35,12 +38,19 @@ function resize() {
   radiusX = width * 0.6;
   radiusY = height * 0.5;
 
-  centerX = radiusX + 20;
-  centerY = height - radiusY - 20;
+  centerX = radiusX + 30;
+  centerY = height - radiusY - 30;
 }
 
 window.addEventListener("resize", resize);
 resize();
+
+boostBtn.addEventListener("mousedown", () => currentSpeed = boostSpeed);
+boostBtn.addEventListener("mouseup", () => currentSpeed = baseSpeed);
+boostBtn.addEventListener("mouseleave", () => currentSpeed = baseSpeed);
+
+boostBtn.addEventListener("touchstart", () => currentSpeed = boostSpeed);
+boostBtn.addEventListener("touchend", () => currentSpeed = baseSpeed);
 
 function drawOval() {
   ctx.beginPath();
@@ -67,17 +77,19 @@ function drawCar() {
 }
 
 function update() {
-  angle += speed;
+  angle += currentSpeed;
 
-  if (lastAngle > Math.PI * 1.5 && angle % (Math.PI * 2) < Math.PI * 0.5) {
+  const normalized = angle % (Math.PI * 2);
+
+  if (lastAngle > Math.PI * 1.5 && normalized < Math.PI * 0.5) {
     laps++;
     lapsEl.textContent = laps;
   }
 
-  coins += speed;
+  coins += currentSpeed;
   coinsEl.textContent = Math.floor(coins);
 
-  lastAngle = angle % (Math.PI * 2);
+  lastAngle = normalized;
 }
 
 function loop() {
