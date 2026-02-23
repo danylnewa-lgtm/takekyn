@@ -1,6 +1,5 @@
 const tg = window.Telegram.WebApp;
 
-// Telegram init
 tg.ready();
 tg.expand();
 
@@ -35,16 +34,15 @@ function checkOrientation() {
 window.addEventListener("orientationchange", checkOrientation);
 checkOrientation();
 
-// ===== Настройки овала (уменьшен вдвое) =====
+// ===== Малый овал в левом нижнем углу =====
 const baseRadius = 150;
-const radiusX = baseRadius * 0.4; // уменьшен
-const radiusY = baseRadius * 0.6; // вытянут по вертикали и уменьшен
+const radiusX = baseRadius * 0.4;
+const radiusY = baseRadius * 0.6;
 
 let angle = 0;
 let speed = 0.02;
 let running = false;
 
-// ===== Машинка =====
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
@@ -55,18 +53,15 @@ carImg.onload = () => {
   drawInitial();
 };
 
-carImg.onerror = () => console.error("Ошибка загрузки car.png");
-
-// ===== Управление ускорением =====
+// Ускорение
 document.addEventListener("mousedown", () => speed = 0.04);
 document.addEventListener("mouseup", () => speed = 0.02);
 document.addEventListener("touchstart", () => speed = 0.04);
 document.addEventListener("touchend", () => speed = 0.02);
 
-// ===== Отрисовка =====
-function drawTrack(centerX, centerY) {
+function drawTrack(cx, cy) {
   ctx.beginPath();
-  ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+  ctx.ellipse(cx, cy, radiusX, radiusY, 0, 0, Math.PI * 2);
   ctx.strokeStyle = "white";
   ctx.lineWidth = 2;
   ctx.stroke();
@@ -75,7 +70,7 @@ function drawTrack(centerX, centerY) {
 function drawCar(x, y, rotation) {
   if (!carLoaded) return;
 
-  const scale = 0.125; // уменьшена вдвое
+  const scale = 0.125;
   const w = carImg.width * scale;
   const h = carImg.height * scale;
 
@@ -123,10 +118,9 @@ function update() {
   requestAnimationFrame(update);
 }
 
-// ===== Старт =====
 startBtn.addEventListener("click", () => {
   if (!carLoaded) return;
-  if (window.innerHeight > window.innerWidth) return; // нельзя стартовать в портрете
+  if (window.innerHeight > window.innerWidth) return;
   running = true;
   update();
 });
