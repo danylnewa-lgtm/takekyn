@@ -3,7 +3,7 @@ html, body {
   padding: 0;
   overflow: hidden;
   touch-action: none; /* отключаем жесты */
-  background: #111;
+  background: #112;
   height: 100%;
 }
 
