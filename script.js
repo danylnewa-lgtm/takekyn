@@ -21,6 +21,8 @@ resizeCanvas();
 const baseRadius = 150;
 const radiusX = baseRadius * 0.8;   // 4/5 от прежнего
 const radiusY = baseRadius * 0.6;   // можно оставить так же или сделать вытянутым
+const centerX = canvas.width / 2 - radiusX * 0.5;
+const centerY = canvas.height / 2;
 let angle = 0;
 let speed = 0.002;
 let running = false;
@@ -75,9 +77,8 @@ function drawInitial() {
   drawTrack();
 
   const c = getCenter();
-  const x = c.x + radius * Math.cos(angle);
-  const y = c.y + radius * Math.sin(angle);
-
+  const x = centerX + radiusX * Math.cos(angle);
+  const y = centerY + radiusY * Math.sin(angle);
   drawCar(x, y, angle);
 }
 
