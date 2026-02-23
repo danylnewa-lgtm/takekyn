@@ -34,16 +34,19 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
+
 // ===== ТРАССА =====
+const radiusX = 80;
+const radiusY = 120;
+const trackWidth = 20; // толщина дороги
+
 function center() {
   return {
-    x: canvas.width * 0.35,
-    y: canvas.height / 2
+    x: radiusX + 50,
+    y: radiusY + 90
   };
 }
 
-const radiusX = 120;
-const radiusY = 200;
 
 // ===== ИГРА =====
 let angle = 0;
@@ -53,6 +56,7 @@ let running = false;
 let laps = 0;
 let coins = 0;
 let lastAngle = 0;
+
 
 // ===== МАШИНА =====
 const carImg = new Image();
@@ -65,14 +69,46 @@ carImg.onload = () => {
   drawInitial();
 };
 
-// ===== РИСОВАНИЕ =====
+
+// ===== РИСОВАНИЕ ТРАССЫ =====
 function drawTrack() {
   const c = center();
 
+  // дорога
   ctx.beginPath();
   ctx.ellipse(c.x, c.y, radiusX, radiusY, 0, 0, Math.PI * 2);
+  ctx.lineWidth = trackWidth;
+  ctx.strokeStyle = "#555";
+  ctx.stroke();
+
+  // внешняя граница
+  ctx.beginPath();
+  ctx.ellipse(
+    c.x,
+    c.y,
+    radiusX + trackWidth / 2,
+    radiusY + trackWidth / 2,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.lineWidth = 2;
   ctx.strokeStyle = "white";
-  ctx.lineWidth = 6;
+  ctx.stroke();
+
+  // внутренняя граница
+  ctx.beginPath();
+  ctx.ellipse(
+    c.x,
+    c.y,
+    radiusX - trackWidth / 2,
+    radiusY - trackWidth / 2,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = "white";
   ctx.stroke();
 }
 
@@ -90,27 +126,35 @@ function drawCar(x, y, rotation) {
   ctx.restore();
 }
 
-// ===== ПАНЕЛЬ СПРАВА =====
+
+// ===== ПАНЕЛЬ =====
 function drawUI() {
-  const panelWidth = 260;
-  const panelHeight = 100;
-  const x = canvas.width - panelWidth - 40;
-  const y = canvas.height / 2 - panelHeight / 2;
+  const c = center();
+
+  const boxWidth = 260;
+  const boxHeight = 45;
+  const boxX = c.x - boxWidth / 2;
+  const boxY = c.y - radiusY - 70;
 
   ctx.fillStyle = "#222";
-  ctx.fillRect(x, y, panelWidth, panelHeight);
+  ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
 
   ctx.strokeStyle = "white";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(x, y, panelWidth, panelHeight);
+  ctx.lineWidth = 2;
+  ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
 
   ctx.fillStyle = "white";
-  ctx.font = "22px Arial";
+  ctx.font = "17px Arial";
 
-  ctx.fillText(`Круги: ${laps}`, x + 30, y + 40);
-  ctx.fillText(`Монеты: ${coins.toFixed(1)}`, x + 30, y + 75);
+  ctx.fillText(`Круги: ${laps}`, boxX + 15, boxY + 28);
+
+  const coinsText = `Монеты: ${coins.toFixed(1)}`;
+  const textWidth = ctx.measureText(coinsText).width;
+  ctx.fillText(coinsText, boxX + boxWidth - textWidth - 15, boxY + 28);
 }
 
+
+// ===== ОБНОВЛЕНИЕ =====
 function drawInitial() {
   if (!isLandscape()) return;
 
@@ -152,6 +196,7 @@ function update() {
 
   requestAnimationFrame(update);
 }
+
 
 startBtn.addEventListener("click", () => {
   if (!carLoaded || !isLandscape()) return;
