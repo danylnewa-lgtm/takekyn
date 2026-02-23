@@ -4,7 +4,7 @@ const ctx = canvas.getContext("2d");
 const rotateMessage = document.getElementById("rotateMessage");
 const lapsEl = document.getElementById("laps");
 const coinsEl = document.getElementById("coins");
-const boostBtn = document.getElementById("boostBtn");
+const actionBtn = document.getElementById("actionBtn");
 
 let width, height;
 let centerX, centerY;
@@ -12,12 +12,13 @@ let radiusX, radiusY;
 
 let angle = 0;
 let baseSpeed = 0.02;
-let boostSpeed = 0.06;
-let currentSpeed = baseSpeed;
+let currentSpeed = 0;
 
 let laps = 0;
 let coins = 0;
 let lastAngle = 0;
+
+let started = false;
 
 const carImg = new Image();
 carImg.src = "https://danylnewa-lgtm.github.io/takekyn/assets/car.png";
@@ -35,11 +36,10 @@ function resize() {
     rotateMessage.style.display = "none";
   }
 
-  // Маленький овал
-  radiusX = width * 0.3;   // 30% ширины
-  radiusY = height * 0.25; // 25% высоты
+  // Маленький вертикальный овал
+  radiusX = width * 0.12;   // узкий
+  radiusY = height * 0.28;  // вытянутый по вертикали
 
-  // Левый нижний угол
   centerX = radiusX + 40;
   centerY = height - radiusY - 40;
 }
@@ -47,11 +47,15 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-boostBtn.addEventListener("mousedown", () => currentSpeed = boostSpeed);
-boostBtn.addEventListener("mouseup", () => currentSpeed = baseSpeed);
-boostBtn.addEventListener("mouseleave", () => currentSpeed = baseSpeed);
-boostBtn.addEventListener("touchstart", () => currentSpeed = boostSpeed);
-boostBtn.addEventListener("touchend", () => currentSpeed = baseSpeed);
+actionBtn.addEventListener("click", () => {
+  if (!started) {
+    started = true;
+    currentSpeed = baseSpeed;
+    actionBtn.textContent = "BOOST";
+  } else {
+    currentSpeed += 0.001;
+  }
+});
 
 function drawOval() {
   ctx.beginPath();
@@ -71,8 +75,8 @@ function drawCar() {
   ctx.translate(x, y);
   ctx.rotate(angle + Math.PI / 2);
 
-  const carWidth = 30;
-  const carHeight = 15;
+  const carWidth = 24;
+  const carHeight = 12;
 
   ctx.drawImage(carImg, -carWidth / 2, -carHeight / 2, carWidth, carHeight);
 
@@ -80,6 +84,8 @@ function drawCar() {
 }
 
 function update() {
+  if (!started) return;
+
   angle += currentSpeed;
 
   const normalized = angle % (Math.PI * 2);
