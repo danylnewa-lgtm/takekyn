@@ -9,24 +9,41 @@ document.body.style.backgroundColor = tg.themeParams.bg_color || "#111";
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const startBtn = document.getElementById("startBtn");
+const rotateScreen = document.getElementById("rotateScreen");
+
+function isLandscape() {
+  return window.innerWidth > window.innerHeight;
+}
 
 function resizeCanvas() {
+  if (!isLandscape()) {
+    canvas.style.display = "none";
+    startBtn.style.display = "none";
+    rotateScreen.style.display = "flex";
+    return;
+  }
+
+  rotateScreen.style.display = "none";
+  canvas.style.display = "block";
+  startBtn.style.display = "block";
+
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
-resizeCanvas();
+
 window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
-// ===== ОВАЛ (уменьшен по горизонтали) =====
-const radiusX = 70;   // было 90
-const radiusY = 150;  // немного меньше
-
+// ===== ТРАССА =====
 function center() {
   return {
-    x: radiusX + 40, // левее
-    y: canvas.height - radiusY - 60
+    x: canvas.width * 0.35,
+    y: canvas.height / 2
   };
 }
+
+const radiusX = 120;
+const radiusY = 200;
 
 // ===== ИГРА =====
 let angle = 0;
@@ -55,14 +72,14 @@ function drawTrack() {
   ctx.beginPath();
   ctx.ellipse(c.x, c.y, radiusX, radiusY, 0, 0, Math.PI * 2);
   ctx.strokeStyle = "white";
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 6;
   ctx.stroke();
 }
 
 function drawCar(x, y, rotation) {
   if (!carLoaded) return;
 
-  const scale = 0.08;
+  const scale = 0.06;
   const w = carImg.width * scale;
   const h = carImg.height * scale;
 
@@ -73,33 +90,30 @@ function drawCar(x, y, rotation) {
   ctx.restore();
 }
 
-// ===== ПАНЕЛЬ =====
+// ===== ПАНЕЛЬ СПРАВА =====
 function drawUI() {
-  const c = center();
-
-  const boxWidth = 260;
-  const boxHeight = 40;
-  const boxX = c.x - boxWidth / 2;
-  const boxY = c.y - radiusY - 70;
+  const panelWidth = 260;
+  const panelHeight = 100;
+  const x = canvas.width - panelWidth - 40;
+  const y = canvas.height / 2 - panelHeight / 2;
 
   ctx.fillStyle = "#222";
-  ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
+  ctx.fillRect(x, y, panelWidth, panelHeight);
 
   ctx.strokeStyle = "white";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
+  ctx.lineWidth = 3;
+  ctx.strokeRect(x, y, panelWidth, panelHeight);
 
   ctx.fillStyle = "white";
-  ctx.font = "16px Arial";
+  ctx.font = "22px Arial";
 
-  ctx.fillText(`Круги: ${laps}`, boxX + 15, boxY + 25);
-
-  const coinsText = `Монеты: ${coins.toFixed(1)}`;
-  const textWidth = ctx.measureText(coinsText).width;
-  ctx.fillText(coinsText, boxX + boxWidth - textWidth - 15, boxY + 25);
+  ctx.fillText(`Круги: ${laps}`, x + 30, y + 40);
+  ctx.fillText(`Монеты: ${coins.toFixed(1)}`, x + 30, y + 75);
 }
 
 function drawInitial() {
+  if (!isLandscape()) return;
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawTrack();
 
@@ -112,7 +126,7 @@ function drawInitial() {
 }
 
 function update() {
-  if (!running) return;
+  if (!running || !isLandscape()) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawTrack();
@@ -140,7 +154,7 @@ function update() {
 }
 
 startBtn.addEventListener("click", () => {
-  if (!carLoaded) return;
+  if (!carLoaded || !isLandscape()) return;
 
   if (!running) {
     running = true;
