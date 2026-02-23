@@ -1,6 +1,7 @@
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
+// Адаптация под экран
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -9,16 +10,13 @@ resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
 // ===== НАСТРОЙКИ =====
-const baseRadius = 180;
-const radiusX = baseRadius * 0.8;   // 4/5
-const radiusY = baseRadius * 0.6;   // овал
+const radius = 180;       // радиус круга
+let angle = 0;            // угол движения
+let speed = 0.02;         // скорость
 
-let angle = 0;
-let speed = 0.02;
-
-// ===== КАРТИНКА =====
+// ===== ЗАГРУЗКА КАРТИНКИ =====
 const carImg = new Image();
-carImg.src = "assets/car.png";
+carImg.src = "./assets/car.png";
 
 let carLoaded = false;
 
@@ -27,12 +25,13 @@ carImg.onload = () => {
 };
 
 carImg.onerror = () => {
-  console.error("Не удалось загрузить assets/car.png");
+  console.error("Ошибка загрузки assets/car.png");
 };
 
 // ===== УПРАВЛЕНИЕ =====
 document.addEventListener("mousedown", () => speed = 0.04);
 document.addEventListener("mouseup", () => speed = 0.02);
+
 document.addEventListener("touchstart", () => speed = 0.04);
 document.addEventListener("touchend", () => speed = 0.02);
 
@@ -40,23 +39,23 @@ document.addEventListener("touchend", () => speed = 0.02);
 function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const centerX = canvas.width / 2 - radiusX * 0.5; // смещаем влево
+  const centerX = canvas.width / 2;
   const centerY = canvas.height / 2;
 
-  // рисуем овал
+  // Рисуем круговую трассу
   ctx.beginPath();
-  ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
   ctx.strokeStyle = "#555";
   ctx.lineWidth = 4;
   ctx.stroke();
 
   angle += speed;
 
-  const x = centerX + radiusX * Math.cos(angle);
-  const y = centerY + radiusY * Math.sin(angle);
+  const x = centerX + radius * Math.cos(angle);
+  const y = centerY + radius * Math.sin(angle);
 
   if (carLoaded) {
-    const scale = 0.25; // уменьшена в 4 раза
+    const scale = 0.25; // уменьшение в 4 раза
     const w = carImg.width * scale;
     const h = carImg.height * scale;
 
