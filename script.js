@@ -1,72 +1,98 @@
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+const tg = window.Telegram.WebApp;
 
-// Адаптация под экран
+// Telegram init
+tg.ready();
+tg.expand();              // fullscreen
+tg.disableVerticalSwipes(); // отключаем свайпы
+
+// Можно настроить цвета под тему Telegram
+document.body.style.backgroundColor = tg.themeParams.bg_color || "#111";
+
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+const startBtn = document.getElementById("startBtn");
+
 function resizeCanvas() {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
+
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-// ===== НАСТРОЙКИ =====
-const radius = 180;       // радиус круга
-let angle = 0;            // угол движения
-let speed = 0.02;         // скорость
+const center = () => ({
+  x: canvas.width / 2,
+  y: canvas.height / 2
+});
 
-// ===== ЗАГРУЗКА КАРТИНКИ =====
+const radius = 150;
+
+let angle = 0;
+let speed = 0.02;
+let running = false;
+
 const carImg = new Image();
-carImg.src = "./assets/car.png";
+carImg.src = "assets/images/car.png";
 
 let carLoaded = false;
-
 carImg.onload = () => {
   carLoaded = true;
+  drawInitial();
 };
 
-carImg.onerror = () => {
-  console.error("Ошибка загрузки assets/car.png");
-};
-
-// ===== УПРАВЛЕНИЕ =====
-document.addEventListener("mousedown", () => speed = 0.04);
-document.addEventListener("mouseup", () => speed = 0.02);
-
-document.addEventListener("touchstart", () => speed = 0.04);
-document.addEventListener("touchend", () => speed = 0.02);
-
-// ===== ИГРОВОЙ ЦИКЛ =====
-function update() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  const centerX = canvas.width / 2;
-  const centerY = canvas.height / 2;
-
-  // Рисуем круговую трассу
+function drawTrack() {
+  const c = center();
   ctx.beginPath();
-  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-  ctx.strokeStyle = "#555";
+  ctx.arc(c.x, c.y, radius, 0, Math.PI * 2);
+  ctx.strokeStyle = "white";
   ctx.lineWidth = 4;
   ctx.stroke();
+}
+
+function drawCar(x, y, rotation) {
+  if (!carLoaded) return;
+
+  const scale = 0.5;
+  const w = carImg.width * scale;
+  const h = carImg.height * scale;
+
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rotation);
+  ctx.drawImage(carImg, -w / 2, -h / 2, w, h);
+  ctx.restore();
+}
+
+function drawInitial() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawTrack();
+
+  const c = center();
+  const x = c.x + radius * Math.cos(angle);
+  const y = c.y + radius * Math.sin(angle);
+
+  drawCar(x, y, angle);
+}
+
+function update() {
+  if (!running) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawTrack();
+
+  const c = center();
+  const x = c.x + radius * Math.cos(angle);
+  const y = c.y + radius * Math.sin(angle);
+
+  drawCar(x, y, angle);
 
   angle += speed;
-
-  const x = centerX + radius * Math.cos(angle);
-  const y = centerY + radius * Math.sin(angle);
-
-  if (carLoaded) {
-    const scale = 0.25; // уменьшение в 4 раза
-    const w = carImg.width * scale;
-    const h = carImg.height * scale;
-
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle + Math.PI / 2);
-    ctx.drawImage(carImg, -w / 2, -h / 2, w, h);
-    ctx.restore();
-  }
 
   requestAnimationFrame(update);
 }
 
-update();
+startBtn.addEventListener("click", () => {
+  if (!carLoaded) return;
+  running = true;
+  update();
+});
