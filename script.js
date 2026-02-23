@@ -17,13 +17,13 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-// ===== ОВАЛ (трасса) =====
-const radiusX = 90;
-const radiusY = 165;
+// ===== ОВАЛ (уменьшен по горизонтали) =====
+const radiusX = 70;   // было 90
+const radiusY = 150;  // немного меньше
 
 function center() {
   return {
-    x: radiusX + 60,
+    x: radiusX + 40, // левее
     y: canvas.height - radiusY - 60
   };
 }
@@ -62,7 +62,7 @@ function drawTrack() {
 function drawCar(x, y, rotation) {
   if (!carLoaded) return;
 
-  const scale = 0.08; // очень маленькая машина
+  const scale = 0.08;
   const w = carImg.width * scale;
   const h = carImg.height * scale;
 
@@ -73,7 +73,7 @@ function drawCar(x, y, rotation) {
   ctx.restore();
 }
 
-// ===== ОБЩАЯ РАМКА =====
+// ===== ПАНЕЛЬ =====
 function drawUI() {
   const c = center();
 
@@ -82,11 +82,9 @@ function drawUI() {
   const boxX = c.x - boxWidth / 2;
   const boxY = c.y - radiusY - 70;
 
-  // фон
   ctx.fillStyle = "#222";
   ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
 
-  // рамка
   ctx.strokeStyle = "white";
   ctx.lineWidth = 2;
   ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
@@ -94,10 +92,8 @@ function drawUI() {
   ctx.fillStyle = "white";
   ctx.font = "16px Arial";
 
-  // слева круги
   ctx.fillText(`Круги: ${laps}`, boxX + 15, boxY + 25);
 
-  // справа монеты
   const coinsText = `Монеты: ${coins.toFixed(1)}`;
   const textWidth = ctx.measureText(coinsText).width;
   ctx.fillText(coinsText, boxX + boxWidth - textWidth - 15, boxY + 25);
@@ -115,7 +111,6 @@ function drawInitial() {
   drawUI();
 }
 
-// ===== ОБНОВЛЕНИЕ =====
 function update() {
   if (!running) return;
 
@@ -128,14 +123,12 @@ function update() {
 
   drawCar(x, y, angle);
 
-  // проверка завершения круга
   if (lastAngle > 6 && angle < 0.1) {
     laps++;
   }
 
   lastAngle = angle;
 
-  // начисление монет
   coins += 1 * speed;
 
   drawUI();
@@ -146,7 +139,6 @@ function update() {
   requestAnimationFrame(update);
 }
 
-// ===== СТАРТ =====
 startBtn.addEventListener("click", () => {
   if (!carLoaded) return;
 
