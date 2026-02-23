@@ -32,7 +32,7 @@ checkOrientation();
 // ===== НАСТРОЙКИ ОВАЛА =====
 const baseRadius = 150;
 const radiusX = baseRadius * 0.4;
-const radiusY = baseRadius * 0.6;
+const radiusY = baseRadius * 0.8;
 
 let angle = 0;
 let speed = 0.02;
