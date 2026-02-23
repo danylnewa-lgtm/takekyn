@@ -35,11 +35,13 @@ function resize() {
     rotateMessage.style.display = "none";
   }
 
-  radiusX = width * 0.6;
-  radiusY = height * 0.5;
+  // Маленький овал
+  radiusX = width * 0.3;   // 30% ширины
+  radiusY = height * 0.25; // 25% высоты
 
-  centerX = radiusX + 30;
-  centerY = height - radiusY - 30;
+  // Левый нижний угол
+  centerX = radiusX + 40;
+  centerY = height - radiusY - 40;
 }
 
 window.addEventListener("resize", resize);
@@ -48,7 +50,6 @@ resize();
 boostBtn.addEventListener("mousedown", () => currentSpeed = boostSpeed);
 boostBtn.addEventListener("mouseup", () => currentSpeed = baseSpeed);
 boostBtn.addEventListener("mouseleave", () => currentSpeed = baseSpeed);
-
 boostBtn.addEventListener("touchstart", () => currentSpeed = boostSpeed);
 boostBtn.addEventListener("touchend", () => currentSpeed = baseSpeed);
 
@@ -61,6 +62,8 @@ function drawOval() {
 }
 
 function drawCar() {
+  if (!carImg.complete) return;
+
   const x = centerX + radiusX * Math.cos(angle);
   const y = centerY + radiusY * Math.sin(angle);
 
@@ -68,8 +71,8 @@ function drawCar() {
   ctx.translate(x, y);
   ctx.rotate(angle + Math.PI / 2);
 
-  const carWidth = 40;
-  const carHeight = 20;
+  const carWidth = 30;
+  const carHeight = 15;
 
   ctx.drawImage(carImg, -carWidth / 2, -carHeight / 2, carWidth, carHeight);
 
