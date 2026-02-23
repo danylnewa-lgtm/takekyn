@@ -17,27 +17,27 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-// ====== ОВАЛ (меньше и слева снизу) ======
-const radiusX = 60;
-const radiusY = 110;
+// ====== ОВАЛ (увеличен ×1.5) ======
+const radiusX = 90;   // было 60
+const radiusY = 165;  // было 110
 
 function center() {
   return {
-    x: radiusX + 40,
-    y: canvas.height - radiusY - 40
+    x: radiusX + 60,
+    y: canvas.height - radiusY - 60
   };
 }
 
-// ====== ИГРОВЫЕ ПЕРЕМЕННЫЕ ======
+// ====== ИГРА ======
 let angle = 0;
 let speed = 0.02;
 let running = false;
 
 let laps = 0;
-let points = 0;
+let coins = 0;
 let lastAngle = 0;
 
-// ====== МАШИНКА ======
+// ====== МАШИНА ======
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
@@ -48,7 +48,7 @@ carImg.onload = () => {
   drawInitial();
 };
 
-// ====== РИСОВКА ======
+// ====== РИСОВАНИЕ ======
 function drawTrack() {
   const c = center();
 
@@ -62,7 +62,7 @@ function drawTrack() {
 function drawCar(x, y, rotation) {
   if (!carLoaded) return;
 
-  const scale = 0.25; // уменьшена вдвое
+  const scale = 0.125; // было 0.25 → уменьшили ещё в 2 раза
   const w = carImg.width * scale;
   const h = carImg.height * scale;
 
@@ -73,17 +73,45 @@ function drawCar(x, y, rotation) {
   ctx.restore();
 }
 
-function drawUI() {
-  const c = center();
+// ====== РАМКА UI ======
+function drawBox(x, y, width, height, text) {
+  ctx.fillStyle = "#222";
+  ctx.fillRect(x, y, width, height);
+
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(x, y, width, height);
 
   ctx.fillStyle = "white";
   ctx.font = "16px Arial";
+  ctx.fillText(text, x + 10, y + 22);
+}
 
-  // Счётчик кругов (над овалом)
-  ctx.fillText(`Круги: ${laps}`, c.x - 30, c.y - radiusY - 20);
+function drawUI() {
+  const c = center();
 
-  // Очки
-  ctx.fillText(`Очки: ${points.toFixed(1)}`, 20, 30);
+  const boxWidth = 120;
+  const boxHeight = 35;
+
+  const uiY = c.y - radiusY - 60;
+
+  // Круги
+  drawBox(
+    c.x - boxWidth - 10,
+    uiY,
+    boxWidth,
+    boxHeight,
+    `Круги: ${laps}`
+  );
+
+  // Монеты
+  drawBox(
+    c.x + 10,
+    uiY,
+    boxWidth,
+    boxHeight,
+    `Монеты: ${coins.toFixed(1)}`
+  );
 }
 
 function drawInitial() {
@@ -118,8 +146,8 @@ function update() {
 
   lastAngle = angle;
 
-  // Начисление очков
-  points += 1 * speed;
+  // Начисление монет
+  coins += 1 * speed;
 
   drawUI();
 
