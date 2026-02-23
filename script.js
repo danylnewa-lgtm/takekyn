@@ -2,13 +2,13 @@ const tg = window.Telegram.WebApp;
 
 tg.ready();
 tg.expand();
+tg.disableVerticalSwipes();
 
 document.body.style.backgroundColor = tg.themeParams.bg_color || "#111";
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const startBtn = document.getElementById("startBtn");
-const rotateOverlay = document.getElementById("rotateOverlay");
 
 function resizeCanvas() {
   canvas.width = window.innerWidth;
@@ -17,73 +17,52 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-// ===== ОРИЕНТАЦИЯ =====
-function checkOrientation() {
-  if (window.innerHeight > window.innerWidth) {
-    rotateOverlay.style.display = "flex";
-    running = false;
-  } else {
-    rotateOverlay.style.display = "none";
-  }
+// ====== ОВАЛ (меньше и слева снизу) ======
+const radiusX = 60;
+const radiusY = 110;
+
+function center() {
+  return {
+    x: radiusX + 40,
+    y: canvas.height - radiusY - 40
+  };
 }
-window.addEventListener("resize", checkOrientation);
-checkOrientation();
 
-// ===== НАСТРОЙКИ ОВАЛА =====
-const baseRadius = 150;
-const radiusX = baseRadius * 0.4;
-const radiusY = baseRadius * 0.8;
-
+// ====== ИГРОВЫЕ ПЕРЕМЕННЫЕ ======
 let angle = 0;
 let speed = 0.02;
 let running = false;
 
-// ===== МАШИНКА =====
-const carImg = new Image();
+let laps = 0;
+let points = 0;
+let lastAngle = 0;
 
-// ⚠ ВАЖНО — если не работает, поставь полный URL:
+// ====== МАШИНКА ======
+const carImg = new Image();
 carImg.src = "assets/images/car.png";
-// carImg.src = "https://danylnewa-lgtm.github.io/takekyn/assets/car.png";
 
 let carLoaded = false;
 
 carImg.onload = () => {
   carLoaded = true;
-  console.log("Машинка загружена");
-  drawScene(); // рисуем сразу
+  drawInitial();
 };
 
-carImg.onerror = () => {
-  console.error("PNG не найден. Проверь путь.");
-};
+// ====== РИСОВКА ======
+function drawTrack() {
+  const c = center();
 
-// ===== УСКОРЕНИЕ =====
-document.addEventListener("mousedown", () => speed = 0.04);
-document.addEventListener("mouseup", () => speed = 0.02);
-document.addEventListener("touchstart", () => speed = 0.04);
-document.addEventListener("touchend", () => speed = 0.02);
-
-// ===== ЦЕНТР ОВАЛА =====
-function getTrackCenter() {
-  return {
-    x: radiusX + 20,
-    y: canvas.height - radiusY - 20
-  };
-}
-
-// ===== РИСОВАНИЕ =====
-function drawTrack(cx, cy) {
   ctx.beginPath();
-  ctx.ellipse(cx, cy, radiusX, radiusY, 0, 0, Math.PI * 2);
+  ctx.ellipse(c.x, c.y, radiusX, radiusY, 0, 0, Math.PI * 2);
   ctx.strokeStyle = "white";
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 3;
   ctx.stroke();
 }
 
 function drawCar(x, y, rotation) {
   if (!carLoaded) return;
 
-  const scale = 0.125;
+  const scale = 0.25; // уменьшена вдвое
   const w = carImg.width * scale;
   const h = carImg.height * scale;
 
@@ -94,39 +73,68 @@ function drawCar(x, y, rotation) {
   ctx.restore();
 }
 
-function drawScene() {
+function drawUI() {
+  const c = center();
+
+  ctx.fillStyle = "white";
+  ctx.font = "16px Arial";
+
+  // Счётчик кругов (над овалом)
+  ctx.fillText(`Круги: ${laps}`, c.x - 30, c.y - radiusY - 20);
+
+  // Очки
+  ctx.fillText(`Очки: ${points.toFixed(1)}`, 20, 30);
+}
+
+function drawInitial() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawTrack();
 
-  const c = getTrackCenter();
-  drawTrack(c.x, c.y);
-
+  const c = center();
   const x = c.x + radiusX * Math.cos(angle);
   const y = c.y + radiusY * Math.sin(angle);
 
   drawCar(x, y, angle);
+  drawUI();
 }
 
-// ===== ОБНОВЛЕНИЕ =====
+// ====== ОБНОВЛЕНИЕ ======
 function update() {
   if (!running) return;
 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawTrack();
+
+  const c = center();
+  const x = c.x + radiusX * Math.cos(angle);
+  const y = c.y + radiusY * Math.sin(angle);
+
+  drawCar(x, y, angle);
+
+  // Проверка круга
+  if (lastAngle > 6 && angle < 0.1) {
+    laps++;
+  }
+
+  lastAngle = angle;
+
+  // Начисление очков
+  points += 1 * speed;
+
+  drawUI();
+
   angle += speed;
-  drawScene();
+  if (angle > Math.PI * 2) angle -= Math.PI * 2;
 
   requestAnimationFrame(update);
 }
 
-// ===== КНОПКА СТАРТ =====
+// ====== СТАРТ ======
 startBtn.addEventListener("click", () => {
-  if (!carLoaded) {
-    console.log("Картинка ещё не загружена");
-    return;
-  }
+  if (!carLoaded) return;
 
-  if (window.innerHeight > window.innerWidth) {
-    return; // запрещаем старт в портрете
+  if (!running) {
+    running = true;
+    update();
   }
-
-  running = true;
-  update();
 });
