@@ -8,15 +8,11 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-// Telegram
-if (window.Telegram && window.Telegram.WebApp) {
-  const tg = window.Telegram.WebApp;
-  tg.ready();
-  tg.expand();
-}
-
 // ===== НАСТРОЙКИ =====
-const baseRadius = 150;
+const baseRadius = 180;
+const radiusX = baseRadius * 0.8;   // 4/5
+const radiusY = baseRadius * 0.6;   // овал
+
 let angle = 0;
 let speed = 0.02;
 
@@ -31,7 +27,7 @@ carImg.onload = () => {
 };
 
 carImg.onerror = () => {
-  console.error("Ошибка загрузки изображения. Проверь путь assets/car.png");
+  console.error("Не удалось загрузить assets/car.png");
 };
 
 // ===== УПРАВЛЕНИЕ =====
@@ -40,31 +36,27 @@ document.addEventListener("mouseup", () => speed = 0.02);
 document.addEventListener("touchstart", () => speed = 0.04);
 document.addEventListener("touchend", () => speed = 0.02);
 
-// ===== ОТРИСОВКА =====
+// ===== ИГРОВОЙ ЦИКЛ =====
 function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  const radiusX = baseRadius * 0.8;
-  const radiusY = baseRadius * 0.6;
-
-  const centerX = canvas.width / 2 - radiusX * 0.5;
+  const centerX = canvas.width / 2 - radiusX * 0.5; // смещаем влево
   const centerY = canvas.height / 2;
 
-  // Рисуем овал
+  // рисуем овал
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
-  ctx.strokeStyle = "#444";
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#555";
+  ctx.lineWidth = 4;
   ctx.stroke();
 
-  // Движение
   angle += speed;
 
   const x = centerX + radiusX * Math.cos(angle);
   const y = centerY + radiusY * Math.sin(angle);
 
   if (carLoaded) {
-    const scale = 0.25;
+    const scale = 0.25; // уменьшена в 4 раза
     const w = carImg.width * scale;
     const h = carImg.height * scale;
 
