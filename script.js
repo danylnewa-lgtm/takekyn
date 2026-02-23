@@ -18,7 +18,9 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
-const radius = 150;
+const baseRadius = 150;
+const radiusX = baseRadius * 0.8;   // 4/5 от прежнего
+const radiusY = baseRadius * 0.6;   // можно оставить так же или сделать вытянутым
 let angle = 0;
 let speed = 0.002;
 let running = false;
