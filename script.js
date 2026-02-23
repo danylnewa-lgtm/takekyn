@@ -17,9 +17,9 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener("resize", resizeCanvas);
 
-// ====== ОВАЛ (увеличен ×1.5) ======
-const radiusX = 90;   // было 60
-const radiusY = 165;  // было 110
+// ===== ОВАЛ (трасса) =====
+const radiusX = 90;
+const radiusY = 165;
 
 function center() {
   return {
@@ -28,7 +28,7 @@ function center() {
   };
 }
 
-// ====== ИГРА ======
+// ===== ИГРА =====
 let angle = 0;
 let speed = 0.02;
 let running = false;
@@ -37,7 +37,7 @@ let laps = 0;
 let coins = 0;
 let lastAngle = 0;
 
-// ====== МАШИНА ======
+// ===== МАШИНА =====
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
@@ -48,21 +48,21 @@ carImg.onload = () => {
   drawInitial();
 };
 
-// ====== РИСОВАНИЕ ======
+// ===== РИСОВАНИЕ =====
 function drawTrack() {
   const c = center();
 
   ctx.beginPath();
   ctx.ellipse(c.x, c.y, radiusX, radiusY, 0, 0, Math.PI * 2);
   ctx.strokeStyle = "white";
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 4;
   ctx.stroke();
 }
 
 function drawCar(x, y, rotation) {
   if (!carLoaded) return;
 
-  const scale = 0.125; // было 0.25 → уменьшили ещё в 2 раза
+  const scale = 0.08; // очень маленькая машина
   const w = carImg.width * scale;
   const h = carImg.height * scale;
 
@@ -73,45 +73,34 @@ function drawCar(x, y, rotation) {
   ctx.restore();
 }
 
-// ====== РАМКА UI ======
-function drawBox(x, y, width, height, text) {
-  ctx.fillStyle = "#222";
-  ctx.fillRect(x, y, width, height);
-
-  ctx.strokeStyle = "white";
-  ctx.lineWidth = 2;
-  ctx.strokeRect(x, y, width, height);
-
-  ctx.fillStyle = "white";
-  ctx.font = "16px Arial";
-  ctx.fillText(text, x + 10, y + 22);
-}
-
+// ===== ОБЩАЯ РАМКА =====
 function drawUI() {
   const c = center();
 
-  const boxWidth = 120;
-  const boxHeight = 35;
+  const boxWidth = 260;
+  const boxHeight = 40;
+  const boxX = c.x - boxWidth / 2;
+  const boxY = c.y - radiusY - 70;
 
-  const uiY = c.y - radiusY - 60;
+  // фон
+  ctx.fillStyle = "#222";
+  ctx.fillRect(boxX, boxY, boxWidth, boxHeight);
 
-  // Круги
-  drawBox(
-    c.x - boxWidth - 10,
-    uiY,
-    boxWidth,
-    boxHeight,
-    `Круги: ${laps}`
-  );
+  // рамка
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(boxX, boxY, boxWidth, boxHeight);
 
-  // Монеты
-  drawBox(
-    c.x + 10,
-    uiY,
-    boxWidth,
-    boxHeight,
-    `Монеты: ${coins.toFixed(1)}`
-  );
+  ctx.fillStyle = "white";
+  ctx.font = "16px Arial";
+
+  // слева круги
+  ctx.fillText(`Круги: ${laps}`, boxX + 15, boxY + 25);
+
+  // справа монеты
+  const coinsText = `Монеты: ${coins.toFixed(1)}`;
+  const textWidth = ctx.measureText(coinsText).width;
+  ctx.fillText(coinsText, boxX + boxWidth - textWidth - 15, boxY + 25);
 }
 
 function drawInitial() {
@@ -126,7 +115,7 @@ function drawInitial() {
   drawUI();
 }
 
-// ====== ОБНОВЛЕНИЕ ======
+// ===== ОБНОВЛЕНИЕ =====
 function update() {
   if (!running) return;
 
@@ -139,14 +128,14 @@ function update() {
 
   drawCar(x, y, angle);
 
-  // Проверка круга
+  // проверка завершения круга
   if (lastAngle > 6 && angle < 0.1) {
     laps++;
   }
 
   lastAngle = angle;
 
-  // Начисление монет
+  // начисление монет
   coins += 1 * speed;
 
   drawUI();
@@ -157,7 +146,7 @@ function update() {
   requestAnimationFrame(update);
 }
 
-// ====== СТАРТ ======
+// ===== СТАРТ =====
 startBtn.addEventListener("click", () => {
   if (!carLoaded) return;
 
