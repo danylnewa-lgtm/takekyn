@@ -1,33 +1,16 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-const rotateMessage = document.getElementById("rotateMessage");
-const lapsEl = document.getElementById("laps");
-const coinsEl = document.getElementById("coins");
-const actionBtn = document.getElementById("actionBtn");
-
 let width, height;
 let centerX, centerY;
-let radiusX, radiusY;
+let outerX, outerY;
+let innerX, innerY;
 
 let angle = 0;
-let baseSpeed = 0.02;
-let currentSpeed = 0;
+let speed = 0.02;
 
-let laps = 0;
-let coins = 0;
-let lastAngle = 0;
-let started = false;
-
-let carLoaded = false;
-
-/* ВАЖНО: локальный файл */
 const carImg = new Image();
-carImg.src = "https://danylnewa-lgtm.github.io/takekyn/assets/images/car.png";
-
-carImg.onload = () => {
-  carLoaded = true;
-};
+carImg.src = "assets/images/car.png";
 
 function resize() {
   width = window.innerWidth;
@@ -36,82 +19,91 @@ function resize() {
   canvas.width = width;
   canvas.height = height;
 
-  if (width < height) {
-    rotateMessage.style.display = "flex";
-  } else {
-    rotateMessage.style.display = "none";
-  }
+  // Размер вертикальной трассы
+  outerX = width * 0.09;
+  outerY = height * 0.30;
 
-  /* маленький вертикальный овал */
-  radiusX = width * 0.07;
-  radiusY = height * 0.22;
+  innerX = outerX * 0.6;
+  innerY = outerY * 0.6;
 
-  centerX = radiusX + 30;
-  centerY = height - radiusY - 30;
+  // Левый нижний угол
+  centerX = outerX + 40;
+  centerY = height - outerY - 40;
 }
 
 window.addEventListener("resize", resize);
 resize();
 
-actionBtn.addEventListener("click", () => {
-  if (!started) {
-    started = true;
-    currentSpeed = baseSpeed;
-    actionBtn.textContent = "BOOST";
-  } else {
-    currentSpeed += 0.001;
-  }
-});
-
-function drawOval() {
+function drawTrack() {
+  // Асфальт (между овалами)
   ctx.beginPath();
-  ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
+  ctx.ellipse(centerX, centerY, outerX, outerY, 0, 0, Math.PI * 2);
+  ctx.fillStyle = "#444";
+  ctx.fill();
+
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.beginPath();
+  ctx.ellipse(centerX, centerY, innerX, innerY, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalCompositeOperation = "source-over";
+
+  // Белые границы
+  ctx.beginPath();
+  ctx.ellipse(centerX, centerY, outerX, outerY, 0, 0, Math.PI * 2);
   ctx.strokeStyle = "white";
   ctx.lineWidth = 3;
   ctx.stroke();
+
+  ctx.beginPath();
+  ctx.ellipse(centerX, centerY, innerX, innerY, 0, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Центральная пунктирная линия
+  ctx.setLineDash([10, 10]);
+  ctx.beginPath();
+  ctx.ellipse(
+    centerX,
+    centerY,
+    (outerX + innerX) / 2,
+    (outerY + innerY) / 2,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = "yellow";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.setLineDash([]);
 }
 
 function drawCar() {
-  if (!carLoaded) return;
+  if (!carImg.complete) return;
 
-  const x = centerX + radiusX * Math.cos(angle);
-  const y = centerY + radiusY * Math.sin(angle);
+  const midX = (outerX + innerX) / 2;
+  const midY = (outerY + innerY) / 2;
+
+  const x = centerX + midX * Math.cos(angle);
+  const y = centerY + midY * Math.sin(angle);
 
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(angle + Math.PI / 2);
 
-  ctx.drawImage(carImg, -12, -6, 24, 12);
+  ctx.drawImage(carImg, -15, -8, 30, 16);
 
   ctx.restore();
 }
 
 function update() {
-  if (!started) return;
-
-  angle += currentSpeed;
-
-  const normalized = angle % (Math.PI * 2);
-
-  if (lastAngle > Math.PI * 1.5 && normalized < Math.PI * 0.5) {
-    laps++;
-    lapsEl.textContent = laps;
-  }
-
-  coins += currentSpeed;
-  coinsEl.textContent = Math.floor(coins);
-
-  lastAngle = normalized;
+  angle += speed;
 }
 
 function loop() {
   ctx.clearRect(0, 0, width, height);
 
-  if (width > height) {
-    drawOval();
-    drawCar();
-    update();
-  }
+  drawTrack();
+  drawCar();
+  update();
 
   requestAnimationFrame(loop);
 }
