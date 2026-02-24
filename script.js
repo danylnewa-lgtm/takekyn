@@ -23,7 +23,7 @@ let carLoaded = false;
 
 /* ВАЖНО: локальный файл */
 const carImg = new Image();
-carImg.src = "assets/image/car.png";
+carImg.src = "https://danylnewa-lgtm.github.io/takekyn/assets/images/car.png";
 
 carImg.onload = () => {
   carLoaded = true;
