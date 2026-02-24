@@ -17,11 +17,14 @@ let currentSpeed = 0;
 let laps = 0;
 let coins = 0;
 let lastAngle = 0;
-
 let started = false;
 
+let carLoaded = false;
 const carImg = new Image();
 carImg.src = "https://danylnewa-lgtm.github.io/takekyn/assets/car.png";
+carImg.onload = () => {
+  carLoaded = true;
+};
 
 function resize() {
   width = window.innerWidth;
@@ -36,12 +39,12 @@ function resize() {
     rotateMessage.style.display = "none";
   }
 
-  // Маленький вертикальный овал
-  radiusX = width * 0.12;   // узкий
-  radiusY = height * 0.28;  // вытянутый по вертикали
+  // уменьшено ещё на 0.2
+  radiusX = width * 0.08;
+  radiusY = height * 0.20;
 
-  centerX = radiusX + 40;
-  centerY = height - radiusY - 40;
+  centerX = radiusX + 30;
+  centerY = height - radiusY - 30;
 }
 
 window.addEventListener("resize", resize);
@@ -61,12 +64,12 @@ function drawOval() {
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
   ctx.strokeStyle = "white";
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 3;
   ctx.stroke();
 }
 
 function drawCar() {
-  if (!carImg.complete) return;
+  if (!carLoaded) return;
 
   const x = centerX + radiusX * Math.cos(angle);
   const y = centerY + radiusY * Math.sin(angle);
@@ -75,8 +78,8 @@ function drawCar() {
   ctx.translate(x, y);
   ctx.rotate(angle + Math.PI / 2);
 
-  const carWidth = 24;
-  const carHeight = 12;
+  const carWidth = 20;
+  const carHeight = 10;
 
   ctx.drawImage(carImg, -carWidth / 2, -carHeight / 2, carWidth, carHeight);
 
