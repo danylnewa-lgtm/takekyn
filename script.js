@@ -19,13 +19,21 @@ let coins = 0;
 let lastAngle = 0;
 let started = false;
 
-/* Telegram viewport fix */
-function setRealHeight() {
-  document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-}
-setRealHeight();
-window.addEventListener('resize', setRealHeight);
+let carLoaded = false;
 
+const carImg = new Image();
+carImg.crossOrigin = "anonymous";
+carImg.src = "https://danylnewa-lgtm.github.io/takekyn/assets/car.png";
+
+carImg.onload = () => {
+  carLoaded = true;
+};
+
+carImg.onerror = () => {
+  console.log("Ошибка загрузки изображения");
+};
+
+/* Telegram viewport fix */
 function resize() {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -71,6 +79,8 @@ function drawOval() {
 }
 
 function drawCar() {
+  if (!carLoaded) return;
+
   const x = centerX + radiusX * Math.cos(angle);
   const y = centerY + radiusY * Math.sin(angle);
 
@@ -78,9 +88,16 @@ function drawCar() {
   ctx.translate(x, y);
   ctx.rotate(angle + Math.PI / 2);
 
-  /* Машина как прямоугольник (гарантированно видна) */
-  ctx.fillStyle = "red";
-  ctx.fillRect(-10, -5, 20, 10);
+  const carWidth = 24;
+  const carHeight = 12;
+
+  ctx.drawImage(
+    carImg,
+    -carWidth / 2,
+    -carHeight / 2,
+    carWidth,
+    carHeight
+  );
 
   ctx.restore();
 }
