@@ -23,7 +23,7 @@ let carLoaded = false;
 
 const carImg = new Image();
 carImg.crossOrigin = "anonymous";
-carImg.src = "https://danylnewa-lgtm.github.io/takekyn/assets/car.png";
+carImg.src = "takekyn/assets/car.png";
 
 carImg.onload = () => {
   carLoaded = true;
