@@ -23,7 +23,7 @@ let carLoaded = false;
 
 /* ВАЖНО: локальный файл */
 const carImg = new Image();
-carImg.src = "car.png";
+carImg.src = "assets/image/car.png";
 
 carImg.onload = () => {
   carLoaded = true;
