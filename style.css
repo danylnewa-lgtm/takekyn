@@ -1,59 +1,15 @@
-html, body {
+* {
   margin: 0;
   padding: 0;
-  background: #111;
+  box-sizing: border-box;
+}
+
+body {
+  background: #1b1b1b;
   overflow: hidden;
   font-family: Arial, sans-serif;
-  color: white;
-}
-
-#rotateMessage {
-  position: fixed;
-  inset: 0;
-  background: black;
-  display: none;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  z-index: 10;
-}
-
-#game {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
 }
 
 canvas {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-}
-
-#statsTable {
-  position: absolute;
-  left: 20px;
-  bottom: 55vh;
-  border-collapse: collapse;
-  border: 2px solid white;
-  background: rgba(0,0,0,0.6);
-}
-
-#statsTable th,
-#statsTable td {
-  border: 1px solid white;
-  padding: 8px 20px;
-  text-align: center;
-}
-
-#actionBtn {
-  position: absolute;
-  right: 20px;
-  bottom: 20px;
-  padding: 14px 28px;
-  font-size: 16px;
-  background: #e60000;
-  color: white;
-  border: none;
-  border-radius: 8px;
+  display: block;
 }
