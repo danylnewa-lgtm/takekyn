@@ -21,19 +21,14 @@ let started = false;
 
 let carLoaded = false;
 
+/* ВАЖНО: локальный файл */
 const carImg = new Image();
-carImg.crossOrigin = "anonymous";
-carImg.src = "takekyn/assets/car.png";
+carImg.src = "car.png";
 
 carImg.onload = () => {
   carLoaded = true;
 };
 
-carImg.onerror = () => {
-  console.log("Ошибка загрузки изображения");
-};
-
-/* Telegram viewport fix */
 function resize() {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -47,7 +42,7 @@ function resize() {
     rotateMessage.style.display = "none";
   }
 
-  /* Маленький вертикальный овал */
+  /* маленький вертикальный овал */
   radiusX = width * 0.07;
   radiusY = height * 0.22;
 
@@ -58,7 +53,6 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-/* КНОПКА */
 actionBtn.addEventListener("click", () => {
   if (!started) {
     started = true;
@@ -69,7 +63,6 @@ actionBtn.addEventListener("click", () => {
   }
 });
 
-/* Рисование */
 function drawOval() {
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
@@ -88,16 +81,7 @@ function drawCar() {
   ctx.translate(x, y);
   ctx.rotate(angle + Math.PI / 2);
 
-  const carWidth = 24;
-  const carHeight = 12;
-
-  ctx.drawImage(
-    carImg,
-    -carWidth / 2,
-    -carHeight / 2,
-    carWidth,
-    carHeight
-  );
+  ctx.drawImage(carImg, -12, -6, 24, 12);
 
   ctx.restore();
 }
