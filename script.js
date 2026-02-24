@@ -19,12 +19,12 @@ let coins = 0;
 let lastAngle = 0;
 let started = false;
 
-let carLoaded = false;
-const carImg = new Image();
-carImg.src = "https://danylnewa-lgtm.github.io/takekyn/assets/car.png";
-carImg.onload = () => {
-  carLoaded = true;
-};
+/* Telegram viewport fix */
+function setRealHeight() {
+  document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+}
+setRealHeight();
+window.addEventListener('resize', setRealHeight);
 
 function resize() {
   width = window.innerWidth;
@@ -39,9 +39,9 @@ function resize() {
     rotateMessage.style.display = "none";
   }
 
-  // уменьшено ещё на 0.2
-  radiusX = width * 0.08;
-  radiusY = height * 0.20;
+  /* Маленький вертикальный овал */
+  radiusX = width * 0.07;
+  radiusY = height * 0.22;
 
   centerX = radiusX + 30;
   centerY = height - radiusY - 30;
@@ -50,6 +50,7 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
+/* КНОПКА */
 actionBtn.addEventListener("click", () => {
   if (!started) {
     started = true;
@@ -60,6 +61,7 @@ actionBtn.addEventListener("click", () => {
   }
 });
 
+/* Рисование */
 function drawOval() {
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, radiusX, radiusY, 0, 0, Math.PI * 2);
@@ -69,8 +71,6 @@ function drawOval() {
 }
 
 function drawCar() {
-  if (!carLoaded) return;
-
   const x = centerX + radiusX * Math.cos(angle);
   const y = centerY + radiusY * Math.sin(angle);
 
@@ -78,10 +78,9 @@ function drawCar() {
   ctx.translate(x, y);
   ctx.rotate(angle + Math.PI / 2);
 
-  const carWidth = 20;
-  const carHeight = 10;
-
-  ctx.drawImage(carImg, -carWidth / 2, -carHeight / 2, carWidth, carHeight);
+  /* Машина как прямоугольник (гарантированно видна) */
+  ctx.fillStyle = "red";
+  ctx.fillRect(-10, -5, 20, 10);
 
   ctx.restore();
 }
