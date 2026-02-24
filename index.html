@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Oval Game</title>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -11,12 +12,16 @@
 
 <div id="game">
 
-  <div id="statsTable">
-    <div class="cell header">КРУГИ</div>
-    <div class="cell header">МОНЕТЫ</div>
-    <div class="cell" id="laps">0</div>
-    <div class="cell" id="coins">0</div>
-  </div>
+  <table id="statsTable">
+    <tr>
+      <th>КРУГИ</th>
+      <th>МОНЕТЫ</th>
+    </tr>
+    <tr>
+      <td id="laps">0</td>
+      <td id="coins">0</td>
+    </tr>
+  </table>
 
   <canvas id="gameCanvas"></canvas>
 
