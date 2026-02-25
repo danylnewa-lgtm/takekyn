@@ -2,8 +2,6 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 let width, height;
-let dpr = window.devicePixelRatio || 1;
-
 let centerX, centerY;
 let outerX, outerY;
 let innerX, innerY;
@@ -12,55 +10,70 @@ let angle = 0;
 let speed = 0.02;
 
 const carImg = new Image();
-carImg.src = "car.png";
+carImg.src = "assets/images/car.png";
 
-/* --- Resize с поддержкой Retina --- */
 function resize() {
   width = window.innerWidth;
   height = window.innerHeight;
 
-  canvas.style.width = width + "px";
-  canvas.style.height = height + "px";
+  canvas.width = width;
+  canvas.height = height;
 
-  canvas.width = width * dpr;
-  canvas.height = height * dpr;
+  // Размер вертикальной трассы
+  outerX = width * 0.09;
+  outerY = height * 0.30;
 
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  innerX = outerX * 0.6;
+  innerY = outerY * 0.6;
 
-  outerX = width * 0.18;
-  outerY = height * 0.35;
-
-  innerX = outerX * 0.65;
-  innerY = outerY * 0.65;
-
-  centerX = outerX + 30;
-  centerY = height - outerY - 30;
+  // Левый нижний угол
+  centerX = outerX + 40;
+  centerY = height - outerY - 40;
 }
 
 window.addEventListener("resize", resize);
 resize();
 
-/* --- Touch управление --- */
-canvas.addEventListener("touchstart", () => {
-  speed = 0.05;
-});
-
-canvas.addEventListener("touchend", () => {
-  speed = 0.02;
-});
-
-/* --- Отрисовка --- */
 function drawTrack() {
-  ctx.lineWidth = 6;
-  ctx.strokeStyle = "#777";
-
+  // Асфальт (между овалами)
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, outerX, outerY, 0, 0, Math.PI * 2);
+  ctx.fillStyle = "#444";
+  ctx.fill();
+
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.beginPath();
+  ctx.ellipse(centerX, centerY, innerX, innerY, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalCompositeOperation = "source-over";
+
+  // Белые границы
+  ctx.beginPath();
+  ctx.ellipse(centerX, centerY, outerX, outerY, 0, 0, Math.PI * 2);
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 3;
   ctx.stroke();
 
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, innerX, innerY, 0, 0, Math.PI * 2);
   ctx.stroke();
+
+  // Центральная пунктирная линия
+  ctx.setLineDash([10, 10]);
+  ctx.beginPath();
+  ctx.ellipse(
+    centerX,
+    centerY,
+    (outerX + innerX) / 2,
+    (outerY + innerY) / 2,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.strokeStyle = "yellow";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.setLineDash([]);
 }
 
 function drawCar() {
@@ -75,7 +88,9 @@ function drawCar() {
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(angle + Math.PI / 2);
-  ctx.drawImage(carImg, -20, -10, 40, 20);
+
+  ctx.drawImage(carImg, -15, -8, 30, 16);
+
   ctx.restore();
 }
 
@@ -85,9 +100,11 @@ function update() {
 
 function loop() {
   ctx.clearRect(0, 0, width, height);
+
   drawTrack();
   drawCar();
   update();
+
   requestAnimationFrame(loop);
 }
 
