@@ -7,8 +7,10 @@ let outerX, outerY;
 let innerX, innerY;
 
 let angle = 0;
-let speed = 0.02;
 let baseSpeed = 0.02;
+let maxSpeed = 0.08;
+let speed = baseSpeed;
+let accelerating = false;
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
