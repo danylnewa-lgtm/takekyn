@@ -8,7 +8,7 @@ let innerX, innerY;
 
 let angle = 0;
 let speed = 0.02;
-
+let baseSpeed = 0.02;
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
@@ -97,13 +97,50 @@ function drawCar() {
 function update() {
   angle += speed;
 }
+function drawSpeedometer() {
+  const speedPercent = Math.min(speed / 0.1, 1); // нормализация
 
+  const radius = 50;
+  const x = centerX;
+  const y = centerY - outerY - 70;
+
+  // Фон
+  ctx.beginPath();
+  ctx.arc(x, y, radius, Math.PI, 0);
+  ctx.strokeStyle = "#555";
+  ctx.lineWidth = 8;
+  ctx.stroke();
+
+  // Индикатор скорости
+  ctx.beginPath();
+  ctx.arc(
+    x,
+    y,
+    radius,
+    Math.PI,
+    Math.PI + Math.PI * speedPercent
+  );
+  ctx.strokeStyle = "lime";
+  ctx.lineWidth = 8;
+  ctx.stroke();
+
+  // Текст
+  ctx.fillStyle = "white";
+  ctx.font = "16px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(
+    "Speed: " + (speed * 100).toFixed(1),
+    x,
+    y + 25
+  );
+}
 function loop() {
   ctx.clearRect(0, 0, width, height);
 
   drawTrack();
-  drawCar();
-  update();
+drawCar();
+drawSpeedometer();
+update();
 
   requestAnimationFrame(loop);
 }
