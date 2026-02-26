@@ -35,7 +35,18 @@ function resize() {
 
 window.addEventListener("resize", resize);
 resize();
+const gasBtn = document.getElementById("gasBtn");
 
+gasBtn.addEventListener("mousedown", () => accelerating = true);
+gasBtn.addEventListener("mouseup", () => accelerating = false);
+gasBtn.addEventListener("mouseleave", () => accelerating = false);
+
+gasBtn.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  accelerating = true;
+});
+
+gasBtn.addEventListener("touchend", () => accelerating = false);
 function drawTrack() {
   // Асфальт (между овалами)
   ctx.beginPath();
@@ -97,6 +108,14 @@ function drawCar() {
 }
 
 function update() {
+  if (accelerating) {
+    speed += 0.001;
+    if (speed > maxSpeed) speed = maxSpeed;
+  } else {
+    speed -= 0.001;
+    if (speed < baseSpeed) speed = baseSpeed;
+  }
+
   angle += speed;
 }
 function drawSpeedometer() {
