@@ -14,3 +14,21 @@ body {
 canvas {
   display: block;
 }
+#gasBtn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: none;
+  background: #222;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+#gasBtn:active {
+  background: #444;
+}
