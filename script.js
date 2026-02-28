@@ -111,16 +111,24 @@ function drawCar() {
 function update() {
   prevAngle = angle;
 
+  // Ускорение
+  if (accelerating) {
+    speed += 0.001;
+    if (speed > maxSpeed) speed = maxSpeed;
+  } else {
+    speed -= 0.001;
+    if (speed < baseSpeed) speed = baseSpeed;
+  }
+
   angle += speed;
 
   const twoPI = Math.PI * 2;
 
-  // нормализуем угол
   if (angle >= twoPI) {
     angle -= twoPI;
   }
 
-  // Пересечение финишной линии (переход через 0 радиан)
+  // Пересечение финиша
   if (prevAngle > angle) {
     laps++;
   }
