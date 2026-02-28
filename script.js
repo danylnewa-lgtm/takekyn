@@ -5,7 +5,8 @@ let width, height;
 let centerX, centerY;
 let outerX, outerY;
 let innerX, innerY;
-
+let laps = 0;
+let prevAngle = 0;
 let angle = 0;
 let baseSpeed = 0.02;
 let maxSpeed = 0.08;
@@ -107,6 +108,22 @@ function drawCar() {
   ctx.restore();
 }
 
+function drawFinishLine() {
+  const midX = (outerX + innerX) / 2;
+
+  const x = centerX + midX;
+  const yTop = centerY - 20;
+  const yBottom = centerY + 20;
+
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 4;
+
+  ctx.beginPath();
+  ctx.moveTo(x, yTop);
+  ctx.lineTo(x, yBottom);
+  ctx.stroke();
+}
+
 function update() {
   if (accelerating) {
     speed += 0.001;
@@ -118,6 +135,16 @@ function update() {
 
   angle += speed;
 }
+
+function drawLapCounter() {
+  ctx.fillStyle = "white";
+  ctx.font = "bold 28px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  ctx.fillText("Laps: " + laps, centerX, centerY);
+}
+
 function drawSpeedometer() {
   const speedPercent = Math.min(speed / 0.1, 1); // нормализация
 
@@ -157,9 +184,11 @@ function drawSpeedometer() {
 }
 function loop() {
   ctx.clearRect(0, 0, width, height);
-
-  drawTrack();
+  
+drawTrack();
+drawFinishLine();
 drawCar();
+drawLapCounter();
 drawSpeedometer();
 update();
 
