@@ -25,18 +25,19 @@ let innerX, innerY;
 // Текущий угол положения машины на трассе
 let angle = 0;
 
-// Минимальная скорость (машина не останавливается полностью)
 let baseSpeed = 0.001;
+let maxSpeed = 0.02;
 
-// Максимальная скорость
-let maxSpeed = 0.01;
-
-// Текущая скорость
 let speed = baseSpeed;
+let acceleration = 0.0004;   // плавное ускорение
+let friction = 0.992;        // плавное замедление
 
-// Флаг нажатия газа
-let accelerating = false;
-
+// Перегрев
+let heat = 0;                // текущий нагрев 0–1
+let maxHeat = 1;
+let heatRate = 0.003;        // скорость нагрева
+let coolRate = 0.002;        // скорость охлаждения
+let overheated = false;      // флаг перегрева
 // Загружаем изображение машины
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
@@ -160,14 +161,33 @@ function update() {
 
   prevAngle = angle;
 
-  // Если газ нажат — ускоряемся
-  if (accelerating) {
-    speed += 0.001;
-    if (speed > maxSpeed) speed = maxSpeed;
+  // --- УСКОРЕНИЕ ---
+  if (accelerating && !overheated) {
+
+    // плавный рост скорости
+    speed += acceleration * (1 - speed / maxSpeed);
+
+    // нагрев при "газ в пол"
+    heat += heatRate;
+
+    if (heat >= maxHeat) {
+      heat = maxHeat;
+      overheated = true;
+    }
+
   } else {
-    // Если не нажат — замедляемся
-    speed -= 0.001;
+
+    // плавное замедление
+    speed *= friction;
+
     if (speed < baseSpeed) speed = baseSpeed;
+
+    // охлаждение
+    heat -= coolRate;
+    if (heat <= 0) {
+      heat = 0;
+      overheated = false;
+    }
   }
 
   angle += speed;
@@ -178,7 +198,6 @@ function update() {
     angle -= twoPI;
   }
 
-  // Если угол "перепрыгнул" через 0 — засчитываем круг
   if (prevAngle > angle) {
     laps++;
   }
