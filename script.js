@@ -9,7 +9,7 @@ let laps = 0;
 
 // Предыдущий угол (для определения пересечения финиша)
 let prevAngle = 0;
-
+let accelerating = false;
 // Размеры экрана
 let width, height;
 
