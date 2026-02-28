@@ -155,7 +155,22 @@ function drawCar() {
   ctx.restore();
 }
 
+function drawHeatBar() {
 
+  const barWidth = 120;
+  const barHeight = 10;
+
+  const x = centerX - barWidth / 2;
+  const y = centerY - outerY - 40;
+
+  // фон
+  ctx.fillStyle = "#333";
+  ctx.fillRect(x, y, barWidth, barHeight);
+
+  // заполнение
+  ctx.fillStyle = overheated ? "red" : "orange";
+  ctx.fillRect(x, y, barWidth * heat, barHeight);
+}
 // Обновление логики
 function update() {
 
@@ -281,7 +296,8 @@ function drawSpeedometer() {
 function loop() {
 
   ctx.clearRect(0, 0, width, height);
-
+  
+  drawHeatBar();
   drawTrack();
   drawFinishLine();
   drawCar();
