@@ -189,11 +189,12 @@ function loop() {
   ctx.clearRect(0, 0, width, height);
 
   drawTrack();
-drawCar();
-drawSpeedometer();
-update();
+  drawFinishLine();      // ← добавить
+  drawCar();
+  drawLapCounter();      // ← добавить
+  drawSpeedometer();
+  update();
 
   requestAnimationFrame(loop);
 }
-
 loop();
