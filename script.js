@@ -1,6 +1,7 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-
+let laps = 0;
+let prevAngle = 0;
 let width, height;
 let centerX, centerY;
 let outerX, outerY;
@@ -112,24 +113,31 @@ function update() {
 
   angle += speed;
 
-  // Если прошли полный круг
-  if (prevAngle % (Math.PI * 2) > angle % (Math.PI * 2)) {
+  const twoPI = Math.PI * 2;
+
+  // нормализуем угол
+  if (angle >= twoPI) {
+    angle -= twoPI;
+  }
+
+  // Пересечение финишной линии (переход через 0 радиан)
+  if (prevAngle > angle) {
     laps++;
   }
 }
 function drawFinishLine() {
   const midX = (outerX + innerX) / 2;
 
-  const x = centerX + midX;
-  const yTop = centerY - 20;
-  const yBottom = centerY + 20;
+  const y = centerY; // правая точка овала
+  const xLeft = centerX + midX - 20;
+  const xRight = centerX + midX + 20;
 
   ctx.strokeStyle = "white";
   ctx.lineWidth = 4;
 
   ctx.beginPath();
-  ctx.moveTo(x, yTop);
-  ctx.lineTo(x, yBottom);
+  ctx.moveTo(xLeft, y);
+  ctx.lineTo(xRight, y);
   ctx.stroke();
 }
 function drawLapCounter() {
