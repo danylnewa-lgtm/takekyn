@@ -42,7 +42,6 @@ let engineLevel = Number(localStorage.getItem("engine")) || 1;
 let speed = baseSpeed;
 let acceleration = 0.0004;   // плавное ускорение
 let friction = 0.992;        // плавное замедление
-let engineLevel = 1;
 let coolingLevel = 1;
 let turboLevel = 1;
 
@@ -56,7 +55,6 @@ let overheated = false;      // флаг перегрева
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
-ctx.fillText(playerName, 100, 40);
 // Функция изменения размеров при ресайзе окна
 function resize() {
   width = window.innerWidth;   // ширина окна
@@ -101,7 +99,11 @@ gasBtn.addEventListener("touchstart", (e) => {
 
 gasBtn.addEventListener("touchend", () => accelerating = false);
 
-
+function drawPlayerName(){
+  ctx.fillStyle = "white";
+  ctx.font = "18px Arial";
+  ctx.fillText(playerName, 20, 60);
+}
 // Рисование трассы
 function drawTrack() {
 
@@ -199,10 +201,7 @@ function update() {
     // нагрев при "газ в пол"
     heat += heatRate;
 
-    if (heat >= maxHeat) {
-      heat = maxHeat;
-      overheated = true;
-      if (prevAngle > angle) {
+ if (prevAngle > angle) {
   laps++;
   coins += 5;
 }
@@ -325,17 +324,6 @@ function upgradeEngine(){
     maxSpeed = 0.02 + engineLevel * 0.005;
   }
 }
-function upgradeEngine(){
-
-  let price = engineLevel * 20;
-
-  if (coins >= price){
-    coins -= price;
-    engineLevel++;
-
-    maxSpeed = 0.02 + engineLevel * 0.005;
-  }
-}
 function upgradeCooling(){
 
   let price = coolingLevel * 30;
@@ -364,6 +352,7 @@ function loop() {
   drawSpeedometer();
   update();
   drawCoins();
+  drawPlayerName();
 
   requestAnimationFrame(loop);
 }
