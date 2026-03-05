@@ -205,7 +205,6 @@ function update() {
   laps++;
   coins += 5;
 }
-    }
 
   } else {
 
