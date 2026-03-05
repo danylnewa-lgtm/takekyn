@@ -47,30 +47,22 @@ carImg.src = "assets/images/car.png";
 
 // Функция изменения размеров при ресайзе окна
 function resize() {
-  width = window.innerWidth;   // ширина окна
-  height = window.innerHeight; // высота окна
+  width = window.innerWidth;
+  height = window.innerHeight;
 
-  canvas.width = width;   // устанавливаем ширину canvas
-  canvas.height = height; // устанавливаем высоту canvas
+  canvas.width = width;
+  canvas.height = height;
 
-  // Размер трассы относительно экрана
-  outerX = width * 0.09;
-  outerY = height * 0.30;
-
-  // Внутренний овал меньше внешнего
+  // Размер трассы
+  outerX = width * 0.4;
+  outerY = height * 0.25;
   innerX = outerX * 0.6;
   innerY = outerY * 0.6;
 
-  // Центр трассы (сдвиг от левого нижнего угла)
-  centerX = outerX + 40;
-  centerY = height - outerY - 40;
+  // Центр трассы
+  centerX = width / 2;
+  centerY = height / 2;
 }
-
-// Отслеживание изменения размера окна
-window.addEventListener("resize", resize);
-
-// Первичный вызов
-resize();
 
 
 // Получаем кнопку газа
@@ -90,43 +82,6 @@ gasBtn.addEventListener("touchstart", (e) => {
 gasBtn.addEventListener("touchend", () => accelerating = false);
 
 
-function upgradeEngine() {
-  const price = engineLevel * 20;
-  if (coins >= price) {
-    coins -= price;
-    engineLevel++;
-    maxSpeed = 0.02 + engineLevel * 0.005;
-
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("engineLevel", engineLevel);
-  }
-}
-
-function upgradeTurbo() {
-  const price = turboLevel * 25;
-  if (coins >= price) {
-    coins -= price;
-    turboLevel++;
-    acceleration = 0.0004 + turboLevel * 0.00015;
-
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("turboLevel", turboLevel);
-  }
-}
-
-function upgradeCooling() {
-  const price = coolingLevel * 30;
-  if (coins >= price) {
-    coins -= price;
-    coolingLevel++;
-    coolRate = 0.002 + coolingLevel * 0.001;
-    heatRate -= 0.0004;
-    if (heatRate < 0.001) heatRate = 0.001;
-
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("coolingLevel", coolingLevel);
-  }
-}
 // Рисование трассы
 function drawTrack() {
 
@@ -211,6 +166,43 @@ function drawHeatBar() {
   ctx.fillRect(x, y, barWidth * heat, barHeight);
 }
 // Обновление логики
+function upgradeEngine() {
+  const price = engineLevel * 20;
+  if (coins >= price) {
+    coins -= price;
+    engineLevel++;
+    maxSpeed = 0.02 + engineLevel * 0.005;
+
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("engineLevel", engineLevel);
+  }
+}
+
+function upgradeTurbo() {
+  const price = turboLevel * 25;
+  if (coins >= price) {
+    coins -= price;
+    turboLevel++;
+    acceleration = 0.0004 + turboLevel * 0.00015;
+
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("turboLevel", turboLevel);
+  }
+}
+
+function upgradeCooling() {
+  const price = coolingLevel * 30;
+  if (coins >= price) {
+    coins -= price;
+    coolingLevel++;
+    coolRate = 0.002 + coolingLevel * 0.001;
+    heatRate -= 0.0004;
+    if (heatRate < 0.001) heatRate = 0.001;
+
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("coolingLevel", coolingLevel);
+  }
+}
 function update() {
 
   prevAngle = angle;
