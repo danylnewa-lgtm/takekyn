@@ -81,11 +81,8 @@ gasBtn.addEventListener("touchstart", (e) => {
 
 gasBtn.addEventListener("touchend", () => accelerating = false);
 
-const carImg = new Image();
-carImg.src = "assets/images/car.png";
-carImg.onload = () => {
-  loop();  // запуск игры только после загрузки изображения
-};
+
+
 // Рисование трассы
 function drawTrack() {
 
@@ -351,6 +348,8 @@ function loop() {
   drawCoins();
   requestAnimationFrame(loop);
 }
-
+const carImg = new Image();
+carImg.src = "assets/images/car.png";
+carImg.onload = () => {
 // Запуск анимации
 loop();
