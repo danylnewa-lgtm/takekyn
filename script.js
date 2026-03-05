@@ -1,6 +1,16 @@
 // Получаем canvas из HTML
 const canvas = document.getElementById("gameCanvas");
+const tg = window.Telegram.WebApp;
 
+tg.expand();        // открыть на весь экран
+tg.ready();         // сообщить Telegram что приложение готово
+const user = tg.initDataUnsafe.user;
+
+let playerName = "Player";
+
+if (user) {
+  playerName = user.first_name;
+}
 // Получаем 2D-контекст для рисования
 const ctx = canvas.getContext("2d");
 
@@ -24,13 +34,17 @@ let innerX, innerY;
 
 // Текущий угол положения машины на трассе
 let angle = 0;
-
 let baseSpeed = 0.001;
 let maxSpeed = 0.02;
 
+let coins = Number(localStorage.getItem("coins")) || 0;
+let engineLevel = Number(localStorage.getItem("engine")) || 1;
 let speed = baseSpeed;
 let acceleration = 0.0004;   // плавное ускорение
 let friction = 0.992;        // плавное замедление
+let engineLevel = 1;
+let coolingLevel = 1;
+let turboLevel = 1;
 
 // Перегрев
 let heat = 0;                // текущий нагрев 0–1
@@ -42,7 +56,7 @@ let overheated = false;      // флаг перегрева
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
-
+ctx.fillText(playerName, 100, 40);
 // Функция изменения размеров при ресайзе окна
 function resize() {
   width = window.innerWidth;   // ширина окна
@@ -188,6 +202,10 @@ function update() {
     if (heat >= maxHeat) {
       heat = maxHeat;
       overheated = true;
+      if (prevAngle > angle) {
+  laps++;
+  coins += 5;
+}
     }
 
   } else {
@@ -218,7 +236,13 @@ function update() {
   }
 }
 
+function drawCoins() {
 
+  ctx.fillStyle = "gold";
+  ctx.font = "18px Arial";
+
+  ctx.fillText("Coins: " + coins, 20, 30);
+}
 // Финишная линия
 function drawFinishLine() {
 
@@ -290,7 +314,42 @@ function drawSpeedometer() {
     y + 25
   );
 }
+function upgradeEngine(){
 
+  let price = engineLevel * 20;
+
+  if (coins >= price){
+    coins -= price;
+    engineLevel++;
+
+    maxSpeed = 0.02 + engineLevel * 0.005;
+  }
+}
+function upgradeEngine(){
+
+  let price = engineLevel * 20;
+
+  if (coins >= price){
+    coins -= price;
+    engineLevel++;
+
+    maxSpeed = 0.02 + engineLevel * 0.005;
+  }
+}
+function upgradeCooling(){
+
+  let price = coolingLevel * 30;
+
+  if (coins >= price){
+    coins -= price;
+    coolingLevel++;
+
+    coolRate = 0.002 + coolingLevel * 0.001;
+    heatRate -= 0.0004;
+
+    if (heatRate < 0.001) heatRate = 0.001;
+  }
+}
 
 // Главный цикл
 function loop() {
@@ -304,6 +363,7 @@ function loop() {
   drawLapCounter();
   drawSpeedometer();
   update();
+  drawCoins();
 
   requestAnimationFrame(loop);
 }
