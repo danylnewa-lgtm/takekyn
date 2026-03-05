@@ -65,6 +65,7 @@ function resize() {
 }
 
 
+
 // Получаем кнопку газа
 const gasBtn = document.getElementById("gasBtn");
 
@@ -348,8 +349,9 @@ function loop() {
   drawCoins();
   requestAnimationFrame(loop);
 }
-const carImg = new Image();
-carImg.src = "assets/images/car.png";
+window.addEventListener("resize", resize);
+resize();
+
 carImg.onload = () => {
-// Запуск анимации
-loop();
+  loop();
+};
