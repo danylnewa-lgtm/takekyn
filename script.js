@@ -1,10 +1,5 @@
 // Получаем canvas из HTML
 const canvas = document.getElementById("gameCanvas");
-const tg = window.Telegram.WebApp;
-
-tg.expand();        // открыть на весь экран
-tg.ready();         // сообщить Telegram что приложение готово
-const user = tg.initDataUnsafe.user;
 
 let playerName = "Player";
 
