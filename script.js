@@ -1,11 +1,6 @@
 // Получаем canvas из HTML
 const canvas = document.getElementById("gameCanvas");
 
-let playerName = "Player";
-
-if (user) {
-  playerName = user.first_name;
-}
 // Получаем 2D-контекст для рисования
 const ctx = canvas.getContext("2d");
 
@@ -94,40 +89,44 @@ gasBtn.addEventListener("touchstart", (e) => {
 
 gasBtn.addEventListener("touchend", () => accelerating = false);
 
-function upgradeEngine(){
 
-  let price = engineLevel * 20;
-
-  if (coins >= price){
+function upgradeEngine() {
+  const price = engineLevel * 20;
+  if (coins >= price) {
     coins -= price;
     engineLevel++;
-
     maxSpeed = 0.02 + engineLevel * 0.005;
+
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("engineLevel", engineLevel);
   }
 }
-function upgradeTurbo(){
 
-  let price = turboLevel * 25;
-
-  if (coins >= price){
+function upgradeTurbo() {
+  const price = turboLevel * 25;
+  if (coins >= price) {
     coins -= price;
     turboLevel++;
-
     acceleration = 0.0004 + turboLevel * 0.00015;
+
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("turboLevel", turboLevel);
   }
 }
-function upgradeTurbo(){
 
-  let price = turboLevel * 25;
-
-  if (coins >= price){
+function upgradeCooling() {
+  const price = coolingLevel * 30;
+  if (coins >= price) {
     coins -= price;
-    turboLevel++;
+    coolingLevel++;
+    coolRate = 0.002 + coolingLevel * 0.001;
+    heatRate -= 0.0004;
+    if (heatRate < 0.001) heatRate = 0.001;
 
-    acceleration = 0.0004 + turboLevel * 0.00015;
+    localStorage.setItem("coins", coins);
+    localStorage.setItem("coolingLevel", coolingLevel);
   }
 }
-
 // Рисование трассы
 function drawTrack() {
 
