@@ -16,7 +16,7 @@ const ctx = canvas.getContext("2d");
 
 // Счётчик кругов
 let laps = 0;
-
+let coins = 0;
 // Предыдущий угол (для определения пересечения финиша)
 let prevAngle = 0;
 let accelerating = false;
@@ -34,16 +34,15 @@ let innerX, innerY;
 
 // Текущий угол положения машины на трассе
 let angle = 0;
+let engineLevel = 1;
+let coolingLevel = 1;
+let turboLevel = 1;
 let baseSpeed = 0.001;
 let maxSpeed = 0.02;
 
-let coins = Number(localStorage.getItem("coins")) || 0;
-let engineLevel = Number(localStorage.getItem("engine")) || 1;
 let speed = baseSpeed;
 let acceleration = 0.0004;   // плавное ускорение
 let friction = 0.992;        // плавное замедление
-let coolingLevel = 1;
-let turboLevel = 1;
 
 // Перегрев
 let heat = 0;                // текущий нагрев 0–1
@@ -54,6 +53,7 @@ let overheated = false;      // флаг перегрева
 // Загружаем изображение машины
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
+
 
 // Функция изменения размеров при ресайзе окна
 function resize() {
@@ -99,11 +99,40 @@ gasBtn.addEventListener("touchstart", (e) => {
 
 gasBtn.addEventListener("touchend", () => accelerating = false);
 
-function drawPlayerName(){
-  ctx.fillStyle = "white";
-  ctx.font = "18px Arial";
-  ctx.fillText(playerName, 20, 60);
+function upgradeEngine(){
+
+  let price = engineLevel * 20;
+
+  if (coins >= price){
+    coins -= price;
+    engineLevel++;
+
+    maxSpeed = 0.02 + engineLevel * 0.005;
+  }
 }
+function upgradeTurbo(){
+
+  let price = turboLevel * 25;
+
+  if (coins >= price){
+    coins -= price;
+    turboLevel++;
+
+    acceleration = 0.0004 + turboLevel * 0.00015;
+  }
+}
+function upgradeTurbo(){
+
+  let price = turboLevel * 25;
+
+  if (coins >= price){
+    coins -= price;
+    turboLevel++;
+
+    acceleration = 0.0004 + turboLevel * 0.00015;
+  }
+}
+
 // Рисование трассы
 function drawTrack() {
 
@@ -201,11 +230,14 @@ function update() {
     // нагрев при "газ в пол"
     heat += heatRate;
 
- if (prevAngle > angle) {
+    if (heat >= maxHeat) {
+      heat = maxHeat;
+      overheated = true;
+    }
+if (prevAngle > angle) {
   laps++;
   coins += 5;
 }
-
   } else {
 
     // плавное замедление
@@ -312,31 +344,7 @@ function drawSpeedometer() {
     y + 25
   );
 }
-function upgradeEngine(){
 
-  let price = engineLevel * 20;
-
-  if (coins >= price){
-    coins -= price;
-    engineLevel++;
-
-    maxSpeed = 0.02 + engineLevel * 0.005;
-  }
-}
-function upgradeCooling(){
-
-  let price = coolingLevel * 30;
-
-  if (coins >= price){
-    coins -= price;
-    coolingLevel++;
-
-    coolRate = 0.002 + coolingLevel * 0.001;
-    heatRate -= 0.0004;
-
-    if (heatRate < 0.001) heatRate = 0.001;
-  }
-}
 
 // Главный цикл
 function loop() {
@@ -351,8 +359,6 @@ function loop() {
   drawSpeedometer();
   update();
   drawCoins();
-  drawPlayerName();
-
   requestAnimationFrame(loop);
 }
 
