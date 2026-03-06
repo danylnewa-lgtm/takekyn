@@ -224,7 +224,6 @@ function update() {
     }
 if (prevAngle > angle) {
   laps++;
-  coins++;
 }
   } else {
 
@@ -251,6 +250,9 @@ if (prevAngle > angle) {
 
   if (prevAngle > angle) {
     laps++;
+  }
+   if (prevAngle > angle) {
+    coins++;
   }
 }
 
