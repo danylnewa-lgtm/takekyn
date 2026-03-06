@@ -224,7 +224,7 @@ function update() {
     }
 if (prevAngle > angle) {
   laps++;
-  coins += 5;
+  coins++;
 }
   } else {
 
