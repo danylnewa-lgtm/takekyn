@@ -40,7 +40,22 @@ canvas {
   cursor: pointer;
   outline: none;
 }
+#upgradePanel{
+  position: fixed;
+  right: 20px;
+  top: 20px;
 
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#coinsUI{
+  color: gold;
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 10px;
+}
 /* Рифление педали */
 #gasBtn::before {
   content: "";
