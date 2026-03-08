@@ -66,8 +66,11 @@ function resize() {
 }
 
 
-function updateCoinsUI(){
-  document.getElementById("coinsUI").innerText = "Coins: " + coins;
+ffunction updateCoinsUI(){
+  const el = document.getElementById("coinsUI");
+  if (el) {
+    el.innerText = "Coins: " + coins;
+  }
 }
 // Получаем кнопку газа
 const gasBtn = document.getElementById("gasBtn");
@@ -157,19 +160,21 @@ function drawCar() {
 }
 function updateUpgradeUI() {
 
+  const engineBtn = document.getElementById("engineBtn");
+  const turboBtn = document.getElementById("turboBtn");
+  const coolingBtn = document.getElementById("coolingBtn");
+
+  if (!engineBtn || !turboBtn || !coolingBtn) return;
+
   const enginePrice = getUpgradePrice(engineLevel);
   const turboPrice = getUpgradePrice(turboLevel);
   const coolingPrice = getUpgradePrice(coolingLevel);
 
-  document.getElementById("engineBtn").innerText =
-    "Engine Lv." + engineLevel + " (" + enginePrice + ")";
-
-  document.getElementById("turboBtn").innerText =
-    "Turbo Lv." + turboLevel + " (" + turboPrice + ")";
-
-  document.getElementById("coolingBtn").innerText =
-    "Cooling Lv." + coolingLevel + " (" + coolingPrice + ")";
+  engineBtn.innerText = "Engine Lv." + engineLevel + " (" + enginePrice + ")";
+  turboBtn.innerText = "Turbo Lv." + turboLevel + " (" + turboPrice + ")";
+  coolingBtn.innerText = "Cooling Lv." + coolingLevel + " (" + coolingPrice + ")";
 }
+
 function drawHeatBar() {
 
   const barWidth = 120;
@@ -364,9 +369,10 @@ function loop() {
   update();
   requestAnimationFrame(loop);
 }
-window.addEventListener("resize", resize);
+window.addEventListener("DOMContentLoaded", () => {
+  updateCoinsUI();
+  updateUpgradeUI();
 resize();
-
 carImg.onload = () => {
   loop();
 };
