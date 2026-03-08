@@ -234,48 +234,48 @@ function update() {
 
   prevAngle = angle;
 
-  // --- УСКОРЕНИЕ ---
+  // ускорение
   if (accelerating && !overheated) {
 
-    // плавный рост скорости
     speed += acceleration * (1 - speed / maxSpeed);
 
-    // нагрев при "газ в пол"
     heat += heatRate;
 
     if (heat >= maxHeat) {
       heat = maxHeat;
       overheated = true;
     }
-if (prevAngle > angle) {
-  laps++;
-  coins += 1;
-  updateCoinsUI();
-}
+
   } else {
 
-    // плавное замедление
     speed *= friction;
 
     if (speed < baseSpeed) speed = baseSpeed;
 
-    // охлаждение
     heat -= coolRate;
+
     if (heat <= 0) {
       heat = 0;
       overheated = false;
     }
   }
 
+  // движение по трассе
   angle += speed;
 
   const twoPI = Math.PI * 2;
 
   if (angle >= twoPI) {
     angle -= twoPI;
-    }
   }
-  
+
+  // проверка круга
+  if (prevAngle > angle) {
+    laps++;
+    coins++;
+    updateCoinsUI();
+  }
+}
 
 // Финишная линия
 function drawFinishLine() {
@@ -362,8 +362,6 @@ function loop() {
   drawLapCounter();
   drawSpeedometer();
   update();
-  updateCoinsUI();
-  updateUpgradeUI();
   requestAnimationFrame(loop);
 }
 window.addEventListener("resize", resize);
