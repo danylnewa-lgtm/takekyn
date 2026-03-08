@@ -54,20 +54,21 @@ function resize() {
   canvas.width = width;
   canvas.height = height;
 
-  // вертикальная трасса
   outerX = width * 0.18;
   outerY = height * 0.40;
 
   innerX = outerX * 0.6;
   innerY = outerY * 0.6;
 
-  // смещаем влево
-  centerX = width * 0.35;
+  // сильнее влево
+  centerX = width * 0.25;
   centerY = height / 2;
 }
 
 
-
+function updateCoinsUI(){
+  document.getElementById("coinsUI").innerText = "Coins: " + coins;
+}
 // Получаем кнопку газа
 const gasBtn = document.getElementById("gasBtn");
 
@@ -195,8 +196,8 @@ function upgradeEngine() {
     engineLevel++;
 
     maxSpeed = 0.02 + engineLevel * 0.005;
-
-    updateUpgradeUI();
+updateCoinsUI();
+updateUpgradeUI();
   }
 }
 
@@ -209,8 +210,8 @@ function upgradeTurbo() {
     turboLevel++;
 
     acceleration = 0.0004 + turboLevel * 0.00015;
-
-    updateUpgradeUI();
+updateCoinsUI();
+updateUpgradeUI();
   }
 }
 function upgradeCooling() {
@@ -225,8 +226,8 @@ function upgradeCooling() {
     heatRate -= 0.0004;
 
     if (heatRate < 0.001) heatRate = 0.001;
-
-    updateUpgradeUI();
+updateCoinsUI();
+updateUpgradeUI();
   }
 }
 function update() {
@@ -248,7 +249,8 @@ function update() {
     }
 if (prevAngle > angle) {
   laps++;
-  coins++;
+  coins += 1;
+  updateCoinsUI();
 }
   } else {
 
@@ -274,13 +276,7 @@ if (prevAngle > angle) {
     }
   }
   
-function drawCoins() {
 
-  ctx.fillStyle = "gold";
-  ctx.font = "18px Arial";
-
-  ctx.fillText("Coins: " + coins, 20, 30);
-}
 // Финишная линия
 function drawFinishLine() {
 
@@ -366,7 +362,7 @@ function loop() {
   drawLapCounter();
   drawSpeedometer();
   update();
-  drawCoins();
+  updateCoinsUI();
   updateUpgradeUI();
   requestAnimationFrame(loop);
 }
