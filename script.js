@@ -250,10 +250,7 @@ if (prevAngle > angle) {
 
   if (prevAngle > angle) {
     laps++;
-  }
-   if (prevAngle > angle) {
-    coins++;
-  }
+     coins++;
 }
 
 function drawCoins() {
