@@ -224,6 +224,7 @@ function update() {
     }
 if (prevAngle > angle) {
   laps++;
+  coins++;
 }
   } else {
 
@@ -246,13 +247,9 @@ if (prevAngle > angle) {
 
   if (angle >= twoPI) {
     angle -= twoPI;
+    }
   }
-
-  if (prevAngle > angle) {
-    laps++;
-     coins++;
-}
-
+  
 function drawCoins() {
 
   ctx.fillStyle = "gold";
