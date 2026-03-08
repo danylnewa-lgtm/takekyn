@@ -47,20 +47,22 @@ carImg.src = "assets/images/car.png";
 
 // Функция изменения размеров при ресайзе окна
 function resize() {
+
   width = window.innerWidth;
   height = window.innerHeight;
 
   canvas.width = width;
   canvas.height = height;
 
-  // Размер трассы
-  outerX = width * 0.4;
-  outerY = height * 0.25;
+  // вертикальная трасса
+  outerX = width * 0.18;
+  outerY = height * 0.40;
+
   innerX = outerX * 0.6;
   innerY = outerY * 0.6;
 
-  // Центр трассы
-  centerX = width / 2;
+  // смещаем влево
+  centerX = width * 0.35;
   centerY = height / 2;
 }
 
@@ -83,7 +85,9 @@ gasBtn.addEventListener("touchstart", (e) => {
 gasBtn.addEventListener("touchend", () => accelerating = false);
 
 
-
+function getUpgradePrice(level) {
+  return 1 + (level - 1) * 3;
+}
 // Рисование трассы
 function drawTrack() {
 
@@ -150,7 +154,21 @@ function drawCar() {
 
   ctx.restore();
 }
+function updateUpgradeUI() {
 
+  const enginePrice = getUpgradePrice(engineLevel);
+  const turboPrice = getUpgradePrice(turboLevel);
+  const coolingPrice = getUpgradePrice(coolingLevel);
+
+  document.getElementById("engineBtn").innerText =
+    "Engine Lv." + engineLevel + " (" + enginePrice + ")";
+
+  document.getElementById("turboBtn").innerText =
+    "Turbo Lv." + turboLevel + " (" + turboPrice + ")";
+
+  document.getElementById("coolingBtn").innerText =
+    "Cooling Lv." + coolingLevel + " (" + coolingPrice + ")";
+}
 function drawHeatBar() {
 
   const barWidth = 120;
@@ -169,40 +187,46 @@ function drawHeatBar() {
 }
 // Обновление логики
 function upgradeEngine() {
-  const price = engineLevel * 20;
+
+  const price = getUpgradePrice(engineLevel);
+
   if (coins >= price) {
     coins -= price;
     engineLevel++;
+
     maxSpeed = 0.02 + engineLevel * 0.005;
 
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("engineLevel", engineLevel);
+    updateUpgradeUI();
   }
 }
 
 function upgradeTurbo() {
-  const price = turboLevel * 25;
+
+  const price = getUpgradePrice(turboLevel);
+
   if (coins >= price) {
     coins -= price;
     turboLevel++;
+
     acceleration = 0.0004 + turboLevel * 0.00015;
 
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("turboLevel", turboLevel);
+    updateUpgradeUI();
   }
 }
-
 function upgradeCooling() {
-  const price = coolingLevel * 30;
+
+  const price = getUpgradePrice(coolingLevel);
+
   if (coins >= price) {
     coins -= price;
     coolingLevel++;
+
     coolRate = 0.002 + coolingLevel * 0.001;
     heatRate -= 0.0004;
+
     if (heatRate < 0.001) heatRate = 0.001;
 
-    localStorage.setItem("coins", coins);
-    localStorage.setItem("coolingLevel", coolingLevel);
+    updateUpgradeUI();
   }
 }
 function update() {
@@ -343,6 +367,7 @@ function loop() {
   drawSpeedometer();
   update();
   drawCoins();
+  updateUpgradeUI();
   requestAnimationFrame(loop);
 }
 window.addEventListener("resize", resize);
