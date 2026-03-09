@@ -375,11 +375,8 @@ window.addEventListener("DOMContentLoaded", () => {
   updateUpgradeUI();
 
   resize();
-
   window.addEventListener("resize", resize);
 
-  carImg.onload = () => {
-    loop();
-  };
+  loop(); // запускаем игру сразу
 
 });
