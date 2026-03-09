@@ -370,9 +370,16 @@ function loop() {
   requestAnimationFrame(loop);
 }
 window.addEventListener("DOMContentLoaded", () => {
+
   updateCoinsUI();
   updateUpgradeUI();
-resize();
-carImg.onload = () => {
-  loop();
-};
+
+  resize();
+
+  window.addEventListener("resize", resize);
+
+  carImg.onload = () => {
+    loop();
+  };
+
+});
