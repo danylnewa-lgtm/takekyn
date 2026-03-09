@@ -66,7 +66,7 @@ function resize() {
 }
 
 
-ffunction updateCoinsUI(){
+function updateCoinsUI(){
   const el = document.getElementById("coinsUI");
   if (el) {
     el.innerText = "Coins: " + coins;
