@@ -200,7 +200,7 @@ function upgradeEngine() {
     coins -= price;
     engineLevel++;
 
-    maxSpeed = 0.02 + engineLevel * 0.005;
+   maxSpeed = 0.02 + engineLevel * 0.01;
 updateCoinsUI();
 updateUpgradeUI();
   }
