@@ -4,6 +4,10 @@ const canvas = document.getElementById("gameCanvas");
 // Получаем 2D-контекст для рисования
 const ctx = canvas.getContext("2d");
 
+const ENGINE_BONUS = 0.01;
+const TURBO_BONUS = 0.0004;
+const COOLING_BONUS = 0.0015;
+const HEAT_REDUCTION = 0.0003;
 // Счётчик кругов
 let laps = 0;
 let coins = 0;
@@ -200,7 +204,7 @@ function upgradeEngine() {
     coins -= price;
     engineLevel++;
 
-   maxSpeed = 0.02 + engineLevel * 0.01;
+   maxSpeed += ENGINE_BONUS;
 updateCoinsUI();
 updateUpgradeUI();
   }
@@ -214,7 +218,7 @@ function upgradeTurbo() {
     coins -= price;
     turboLevel++;
 
-    acceleration = 0.0004 + turboLevel * 0.00015;
+    acceleration += TURBO_BONUS;
 updateCoinsUI();
 updateUpgradeUI();
   }
@@ -227,10 +231,10 @@ function upgradeCooling() {
     coins -= price;
     coolingLevel++;
 
-    coolRate = 0.002 + coolingLevel * 0.001;
-    heatRate -= 0.0004;
+coolRate += COOLING_BONUS;
+heatRate -= HEAT_REDUCTION;
 
-    if (heatRate < 0.001) heatRate = 0.001;
+if (heatRate < 0.001) heatRate = 0.001;
 updateCoinsUI();
 updateUpgradeUI();
   }
