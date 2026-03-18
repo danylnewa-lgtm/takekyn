@@ -8,6 +8,27 @@ const TURBO_BONUS = 0.0004;
 const COOLING_BONUS = 0.0015;
 const HEAT_REDUCTION = 0.0003;
 
+// Позиции деталей на макете
+const parts = {
+  engine: { x: 50, y: 30, level: 1, wear: 0 },
+  turbo: { x: 90, y: 30, level: 1, wear: 0 },
+  cooling: { x: 70, y: 60, level: 1, wear: 0 },
+};
+
+// Рисуем машину сверху
+function drawCarTop() {
+  // кузов
+  ctx.fillStyle = "#333";
+  ctx.fillRect(centerX-30, centerY-15, 60, 30);
+
+  // детали
+  for (const [name, part] of Object.entries(parts)) {
+    const color = part.wear < 0.33 ? "green" : part.wear < 0.66 ? "yellow" : "red";
+    ctx.fillStyle = color;
+    ctx.fillRect(centerX - 30 + part.x, centerY - 15 + part.y, 15, 15);
+  }
+}
+
 // прогресс
 let laps = 0;
 let coins = 0;
