@@ -272,11 +272,8 @@ function update() {
 
   prevAngle = angle;
 
-  // ускорение
   if (accelerating && !overheated) {
-
     speed += acceleration * (1 - speed / maxSpeed);
-
     heat += heatRate;
 
     if (heat >= maxHeat) {
@@ -285,7 +282,6 @@ function update() {
     }
 
   } else {
-
     speed *= friction;
 
     if (speed < baseSpeed) speed = baseSpeed;
@@ -298,20 +294,21 @@ function update() {
     }
   }
 
-  // движение по трассе
-angle += speed;
+  angle += speed;
 
-const twoPI = Math.PI * 2;
+  const twoPI = Math.PI * 2;
 
-if (angle >= twoPI) {
-  angle -= twoPI;
+  if (angle >= twoPI) {
+    angle -= twoPI;
 
-  laps++;
-  coins++;
+    laps++;
+    coins++;
 
-  updateCoinsUI();
-  saveProgress();
-}
+    updateCoinsUI();
+    saveProgress();
+  }
+
+} 
 
 // Финишная линия
 function drawFinishLine() {
