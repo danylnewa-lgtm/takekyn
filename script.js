@@ -1,4 +1,4 @@
-// canvas
+чЧ// canvas
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -169,17 +169,12 @@ function resize() {
 // ===== рисование =====
 function drawTrack() {
 
-  ctx.fillStyle = "#444";
+  // дорога (с дыркой)
+  ctx.fillStyle = "#3a3a3a";
 
   ctx.beginPath();
-
-  // внешний овал
   ctx.ellipse(centerX, centerY, outerX, outerY, 0, 0, Math.PI * 2);
-
-  // внутренний (дырка)
   ctx.ellipse(centerX, centerY, innerX, innerY, 0, 0, Math.PI * 2);
-
-  // правило "дырки"
   ctx.fill("evenodd");
 
   // границы
@@ -193,6 +188,56 @@ function drawTrack() {
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, innerX, innerY, 0, 0, Math.PI * 2);
   ctx.stroke();
+
+  // центральная пунктирная линия
+  ctx.setLineDash([12, 10]);
+
+  ctx.beginPath();
+  ctx.ellipse(
+    centerX,
+    centerY,
+    (outerX + innerX) / 2,
+    (outerY + innerY) / 2,
+    0,
+    0,
+    Math.PI * 2
+  );
+
+  ctx.strokeStyle = "yellow";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.setLineDash([]);
+}
+
+function drawFinishLine() {
+
+  const midX = (outerX + innerX) / 2;
+  const trackWidth = outerY - innerY;
+
+  // позиция справа (как было)
+  const baseX = centerX + midX;
+  const baseY = centerY;
+
+  const tileSize = 6;
+  const rows = Math.floor(trackWidth / tileSize);
+  const cols = 4;
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+
+      const isWhite = (row + col) % 2 === 0;
+
+      ctx.fillStyle = isWhite ? "white" : "black";
+
+      ctx.fillRect(
+        baseX - cols * tileSize / 2 + col * tileSize,
+        baseY - trackWidth / 2 + row * tileSize,
+        tileSize,
+        tileSize
+      );
+    }
+  }
 }
 
 function drawCar() {
@@ -277,7 +322,8 @@ function loop() {
   ctx.clearRect(0, 0, width, height);
 
   drawTrack();
-  drawCar();
+drawFinishLine(); // после трассы
+drawCar();
   drawLapCounter();
   drawHeatBar();
 
