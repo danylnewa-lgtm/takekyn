@@ -48,6 +48,7 @@ function saveProgress() {
   localStorage.setItem("engineLevel", engineLevel);
   localStorage.setItem("turboLevel", turboLevel);
   localStorage.setItem("coolingLevel", coolingLevel);
+  localStorage.setItem("laps", laps);
 }
 
 function loadProgress() {
@@ -55,6 +56,7 @@ function loadProgress() {
   engineLevel = parseInt(localStorage.getItem("engineLevel")) || 1;
   turboLevel = parseInt(localStorage.getItem("turboLevel")) || 1;
   coolingLevel = parseInt(localStorage.getItem("coolingLevel")) || 1;
+  laps = parseInt(localStorage.getItem("laps")) || 0;
 }
 
 // восстановление параметров
@@ -166,16 +168,31 @@ function resize() {
 
 // ===== рисование =====
 function drawTrack() {
+
+  ctx.fillStyle = "#444";
+
+  ctx.beginPath();
+
+  // внешний овал
+  ctx.ellipse(centerX, centerY, outerX, outerY, 0, 0, Math.PI * 2);
+
+  // внутренний (дырка)
+  ctx.ellipse(centerX, centerY, innerX, innerY, 0, 0, Math.PI * 2);
+
+  // правило "дырки"
+  ctx.fill("evenodd");
+
+  // границы
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 3;
+
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, outerX, outerY, 0, 0, Math.PI * 2);
-  ctx.fillStyle = "#444";
-  ctx.fill();
+  ctx.stroke();
 
-  ctx.globalCompositeOperation = "destination-out";
   ctx.beginPath();
   ctx.ellipse(centerX, centerY, innerX, innerY, 0, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.globalCompositeOperation = "source-over";
+  ctx.stroke();
 }
 
 function drawCar() {
