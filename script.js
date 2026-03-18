@@ -305,18 +305,8 @@ function update() {
 
   if (angle >= twoPI) {
     angle -= twoPI;
-  }
-
-  // проверка круга
- if (angle >= twoPI) {
-  angle -= twoPI;
-
-  laps++;
-  coins++;
-
-  updateCoinsUI();
+      updateCoinsUI();
   saveProgress();
-}
   }
 }
 
