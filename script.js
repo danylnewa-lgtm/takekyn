@@ -299,15 +299,18 @@ function update() {
   }
 
   // движение по трассе
-  angle += speed;
+angle += speed;
 
-  const twoPI = Math.PI * 2;
+const twoPI = Math.PI * 2;
 
-  if (angle >= twoPI) {
-    angle -= twoPI;
-      updateCoinsUI();
+if (angle >= twoPI) {
+  angle -= twoPI;
+
+  laps++;
+  coins++;
+
+  updateCoinsUI();
   saveProgress();
-  }
 }
 
 // Финишная линия
