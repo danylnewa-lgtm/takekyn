@@ -120,24 +120,45 @@ function getUpgradePrice(level) {
   return 1 + (level - 1) * 3;
 }
 
-// апгрейды через картинки
-function getUpgradePrice(level){ return 1 + (level-1)*3; }
+// привязка картинок к апгрейдам
+const engineImg = document.getElementById("engineImg");
+const turboImg = document.getElementById("turboImg");
+const suspensionImg = document.getElementById("suspensionImg");
 
-function upgradeEngine(){
+engineImg.onclick = function() {
   const price = getUpgradePrice(engineLevel);
-  if(coins >= price){ coins -= price; engineLevel++; maxSpeed += 0.01; saveProgress(); updateCoinsUI(); }
-}
+  if(coins >= price){
+    coins -= price;
+    engineLevel++;
+    maxSpeed += 0.01;
+    saveProgress();
+    updateCoinsUI();
+  }
+};
 
-function upgradeSuspension(){
+turboImg.onclick = function() {
   const price = getUpgradePrice(turboLevel);
-  if(coins >= price){ coins -= price; turboLevel++; acceleration += 0.0004; saveProgress(); updateCoinsUI(); }
-}
+  if(coins >= price){
+    coins -= price;
+    turboLevel++;
+    acceleration += 0.0004;
+    saveProgress();
+    updateCoinsUI();
+  }
+};
 
-function upgradeWheels(){
+suspensionImg.onclick = function() {
   const price = getUpgradePrice(coolingLevel);
-  if(coins >= price){ coins -= price; coolingLevel++; coolRate += 0.0015; heatRate -= 0.0003; if(heatRate<0.001) heatRate=0.001; saveProgress(); updateCoinsUI(); }
-}
-
+  if(coins >= price){
+    coins -= price;
+    coolingLevel++;
+    coolRate += 0.0015;
+    heatRate -= 0.0003;
+    if(heatRate < 0.001) heatRate = 0.001;
+    saveProgress();
+    updateCoinsUI();
+  }
+};
 // привязка к картинкам
 document.getElementById("engineBtn").onclick = upgradeEngine;
 document.getElementById("suspensionBtn").onclick = upgradeSuspension;
