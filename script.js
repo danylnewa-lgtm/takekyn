@@ -48,6 +48,31 @@ let overheated = false;      // флаг перегрева
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
+function saveProgress() {
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("engineLevel", engineLevel);
+  localStorage.setItem("turboLevel", turboLevel);
+  localStorage.setItem("coolingLevel", coolingLevel);
+
+  localStorage.setItem("maxSpeed", maxSpeed);
+  localStorage.setItem("acceleration", acceleration);
+  localStorage.setItem("coolRate", coolRate);
+  localStorage.setItem("heatRate", heatRate);
+}
+
+function loadProgress() {
+
+  coins = parseInt(localStorage.getItem("coins")) || 0;
+
+  engineLevel = parseInt(localStorage.getItem("engineLevel")) || 1;
+  turboLevel = parseInt(localStorage.getItem("turboLevel")) || 1;
+  coolingLevel = parseInt(localStorage.getItem("coolingLevel")) || 1;
+
+  maxSpeed = parseFloat(localStorage.getItem("maxSpeed")) || 0.02;
+  acceleration = parseFloat(localStorage.getItem("acceleration")) || 0.0004;
+  coolRate = parseFloat(localStorage.getItem("coolRate")) || 0.002;
+  heatRate = parseFloat(localStorage.getItem("heatRate")) || 0.003;
+}
 
 // Функция изменения размеров при ресайзе окна
 function resize() {
@@ -207,6 +232,7 @@ function upgradeEngine() {
    maxSpeed += ENGINE_BONUS;
 updateCoinsUI();
 updateUpgradeUI();
+    saveProgress();
   }
 }
 
@@ -221,6 +247,7 @@ function upgradeTurbo() {
     acceleration += TURBO_BONUS;
 updateCoinsUI();
 updateUpgradeUI();
+    saveProgress();
   }
 }
 function upgradeCooling() {
@@ -237,8 +264,10 @@ heatRate -= HEAT_REDUCTION;
 if (heatRate < 0.001) heatRate = 0.001;
 updateCoinsUI();
 updateUpgradeUI();
+saveProgress();
   }
 }
+
 function update() {
 
   prevAngle = angle;
@@ -279,10 +308,15 @@ function update() {
   }
 
   // проверка круга
-  if (prevAngle > angle) {
-    laps++;
-    coins++;
-    updateCoinsUI();
+ if (angle >= twoPI) {
+  angle -= twoPI;
+
+  laps++;
+  coins++;
+
+  updateCoinsUI();
+  saveProgress();
+}
   }
 }
 
@@ -377,7 +411,8 @@ window.addEventListener("DOMContentLoaded", () => {
 
   updateCoinsUI();
   updateUpgradeUI();
-
+  loadProgress();
+  
   resize();
   window.addEventListener("resize", resize);
 
