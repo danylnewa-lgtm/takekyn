@@ -1,3 +1,5 @@
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 const COOLING_BONUS = 0.0015;
 const HEAT_REDUCTION = 0.0003;
 
