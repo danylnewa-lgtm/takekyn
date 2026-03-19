@@ -76,7 +76,21 @@ canvas {
   transform: scale(0.9);
   border-color: gold;
 }
+.upgradeItem {
+  position: relative;
+}
 
+.price {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background: black;
+  color: gold;
+  font-size: 12px;
+  padding: 2px 5px;
+  border-radius: 6px;
+  border: 1px solid gold;
+}
 #coinsUI{
   color: gold;
   font-size: 22px;
