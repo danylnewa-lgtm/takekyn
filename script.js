@@ -208,6 +208,12 @@ function drawHeatBar(){
   ctx.fillRect(x,y,w*heat,10);
 }
 
+function updatePrices() {
+  document.getElementById("enginePrice").innerText = getUpgradePrice(engineLevel);
+  document.getElementById("turboPrice").innerText = getUpgradePrice(turboLevel);
+  document.getElementById("suspensionPrice").innerText = getUpgradePrice(coolingLevel);
+}
+
 // ===== логика =====
 function update(){
   if(accelerating && !overheated){
@@ -244,8 +250,54 @@ function loop(){
 }
 
 // ===== старт =====
-window.addEventListener("DOMContentLoaded",()=>{
+window.addEventListener("DOMContentLoaded", () => {
+
+  const engineImg = document.getElementById("engineImg");
+  const turboImg = document.getElementById("turboImg");
+  const suspensionImg = document.getElementById("suspensionImg");
+
+  engineImg.onclick = () => {
+    const price = getUpgradePrice(engineLevel);
+    if(coins>=price){
+      coins -= price;
+      engineLevel++;
+      maxSpeed += ENGINE_BONUS;
+      saveProgress();
+      updateCoinsUI();
+      updatePrices();
+    }
+  };
+
+  turboImg.onclick = () => {
+    const price = getUpgradePrice(turboLevel);
+    if(coins>=price){
+      coins -= price;
+      turboLevel++;
+      acceleration += TURBO_BONUS;
+      saveProgress();
+      updateCoinsUI();
+      updatePrices();
+    }
+  };
+
+  suspensionImg.onclick = () => {
+    const price = getUpgradePrice(coolingLevel);
+    if(coins>=price){
+      coins -= price;
+      coolingLevel++;
+      coolRate += COOLING_BONUS;
+      heatRate -= HEAT_REDUCTION;
+      if (heatRate < 0.001) heatRate = 0.001;
+      saveProgress();
+      updateCoinsUI();
+      updatePrices();
+    }
+  };
+
   loadProgress();
   updateCoinsUI();
+  updatePrices();
+
+  resize();
   loop();
 });
