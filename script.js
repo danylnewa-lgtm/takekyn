@@ -12,11 +12,12 @@ function resize() {
   canvas.width = width;
   canvas.height = height;
 
-  outerX = width * 0.18;
-  outerY = height * 0.4;
-  innerX = outerX * 0.6;
-  innerY = outerY * 0.6;
-  centerX = width * 0.25;
+  const size = Math.min(width, height);
+
+  outerX = outerY = size * 0.4;
+  innerX = innerY = outerX * 0.6;
+
+  centerX = width / 2;
   centerY = height / 2;
 }
 resize();
@@ -61,11 +62,13 @@ const engineImg = document.getElementById("engineImg");
 const turboImg = document.getElementById("turboImg");
 const suspensionImg = document.getElementById("suspensionImg");
 
-function getUpgradePrice(level){ return 1 + (level-1)*3; }
+function getUpgradePrice(level) {
+  return 1 + (level - 1) * 3;
+}
 
 engineImg.onclick = () => {
   const price = getUpgradePrice(engineLevel);
-  if(coins>=price){
+  if (coins >= price) {
     coins -= price;
     engineLevel++;
     maxSpeed += ENGINE_BONUS;
@@ -75,7 +78,7 @@ engineImg.onclick = () => {
 };
 turboImg.onclick = () => {
   const price = getUpgradePrice(turboLevel);
-  if(coins>=price){
+  if (coins >= price) {
     coins -= price;
     turboLevel++;
     acceleration += TURBO_BONUS;
@@ -85,12 +88,12 @@ turboImg.onclick = () => {
 };
 suspensionImg.onclick = () => {
   const price = getUpgradePrice(coolingLevel);
-  if(coins>=price){
+  if (coins >= price) {
     coins -= price;
     coolingLevel++;
     coolRate += COOLING_BONUS;
     heatRate -= HEAT_REDUCTION;
-    if(heatRate < 0.001) heatRate = 0.001;
+    if (heatRate < 0.001) heatRate = 0.001;
     saveProgress();
     updateCoinsUI();
   }
@@ -99,18 +102,18 @@ suspensionImg.onclick = () => {
 // ===== UI =====
 function updateCoinsUI() {
   const el = document.getElementById("coinsUI");
-  if(el) el.innerText = "Coins: " + coins;
+  if (el) el.innerText = "Coins: " + coins;
 }
 
 // ===== save/load =====
-function saveProgress(){
+function saveProgress() {
   localStorage.setItem("coins", coins);
   localStorage.setItem("engineLevel", engineLevel);
   localStorage.setItem("turboLevel", turboLevel);
   localStorage.setItem("coolingLevel", coolingLevel);
   localStorage.setItem("laps", laps);
 }
-function loadProgress(){
+function loadProgress() {
   coins = parseInt(localStorage.getItem("coins")) || 0;
   engineLevel = parseInt(localStorage.getItem("engineLevel")) || 1;
   turboLevel = parseInt(localStorage.getItem("turboLevel")) || 1;
@@ -120,116 +123,141 @@ function loadProgress(){
 
 // ===== кнопка газа =====
 const gasBtn = document.getElementById("gasBtn");
-gasBtn.addEventListener("mousedown", ()=> accelerating=true);
-gasBtn.addEventListener("mouseup", ()=> accelerating=false);
-gasBtn.addEventListener("mouseleave", ()=> accelerating=false);
-gasBtn.addEventListener("touchstart", e=>{ e.preventDefault(); accelerating=true; });
-gasBtn.addEventListener("touchend", ()=> accelerating=false);
+gasBtn.addEventListener("mousedown", () => (accelerating = true));
+gasBtn.addEventListener("mouseup", () => (accelerating = false));
+gasBtn.addEventListener("mouseleave", () => (accelerating = false));
+gasBtn.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  accelerating = true;
+});
+gasBtn.addEventListener("touchend", () => (accelerating = false));
 
 // ===== рисование =====
-function drawTrack(){
-  // дорога
+function drawTrack() {
   ctx.fillStyle = "#3a3a3a";
   ctx.beginPath();
-  ctx.ellipse(centerX, centerY, outerX, outerY, 0,0,Math.PI*2);
-  ctx.ellipse(centerX, centerY, innerX, innerY, 0,0,Math.PI*2);
+  ctx.arc(centerX, centerY, outerX, 0, Math.PI * 2);
+  ctx.arc(centerX, centerY, innerX, 0, Math.PI * 2, true);
   ctx.fill("evenodd");
 
-  // границы
   ctx.strokeStyle = "white";
   ctx.lineWidth = 3;
+
   ctx.beginPath();
-  ctx.ellipse(centerX, centerY, outerX, outerY, 0,0,Math.PI*2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.ellipse(centerX, centerY, innerX, innerY, 0,0,Math.PI*2);
+  ctx.arc(centerX, centerY, outerX, 0, Math.PI * 2);
   ctx.stroke();
 
-  // центральная пунктирная
-  ctx.setLineDash([12,10]);
   ctx.beginPath();
-  ctx.ellipse(centerX, centerY,(outerX+innerX)/2,(outerY+innerY)/2,0,0,Math.PI*2);
-  ctx.strokeStyle="yellow";
-  ctx.lineWidth=2;
+  ctx.arc(centerX, centerY, innerX, 0, Math.PI * 2);
+  ctx.stroke();
+
+  const midRadius = (outerX + innerX) / 2;
+
+  ctx.setLineDash([12, 10]);
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, midRadius, 0, Math.PI * 2);
+  ctx.strokeStyle = "yellow";
+  ctx.lineWidth = 2;
   ctx.stroke();
   ctx.setLineDash([]);
 }
 
 function drawFinishLine(){
-  const midX = (outerX+innerX)/2;
-  const trackWidth = outerY - innerY;
-  const baseX = centerX + midX;
-  const baseY = centerY;
+  const midRadius = (outerX + innerX) / 2;
+  const trackWidth = outerX - innerX;
 
-  const tileSize = 6;
-  const rows = Math.floor(trackWidth/tileSize);
-  const cols = 4;
-  for(let row=0; row<rows; row++){
-    for(let col=0; col<cols; col++){
-      const isWhite = (row+col)%2===0;
-      ctx.fillStyle = isWhite ? "white" : "black";
-      ctx.fillRect(baseX - cols*tileSize/2 + col*tileSize, baseY - trackWidth/2 + row*tileSize, tileSize, tileSize);
-    }
-  }
-}
+  const angle = 0;
 
-function drawCar(){
-  const midX = (outerX+innerX)/2;
-  const midY = (outerY+innerY)/2;
-  const x = centerX + midX*Math.cos(angle);
-  const y = centerY + midY*Math.sin(angle);
+  const x = centerX + midRadius * Math.cos(angle);
+  const y = centerY + midRadius * Math.sin(angle);
 
   ctx.save();
-  ctx.translate(x,y);
-  ctx.rotate(angle+Math.PI/2);
-  if(carImg.complete){
-    ctx.drawImage(carImg,-15,-8,30,16);
-  }else{
-    ctx.fillStyle="red";
-    ctx.fillRect(-10,-5,20,10);
+  ctx.translate(x, y);
+  ctx.rotate(angle + Math.PI / 2);
+
+  const tileSize = 6;
+  const rows = Math.floor(trackWidth / tileSize);
+  const cols = 4;
+
+  for(let row = 0; row < rows; row++){
+    for(let col = 0; col < cols; col++){
+      ctx.fillStyle = (row + col) % 2 === 0 ? "white" : "black";
+
+      ctx.fillRect(
+        -cols * tileSize / 2 + col * tileSize,
+        -trackWidth / 2 + row * tileSize,
+        tileSize,
+        tileSize
+      );
+    }
+  }
+
+  ctx.restore();
+}
+
+function drawCar() {
+  const midRadius = (outerX + innerX) / 2;
+  const x = centerX + midRadius * Math.cos(angle);
+  const y = centerY + midRadius * Math.sin(angle);
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(angle + Math.PI / 2);
+  if (carImg.complete) {
+    ctx.drawImage(carImg, -15, -8, 30, 16);
+  } else {
+    ctx.fillStyle = "red";
+    ctx.fillRect(-10, -5, 20, 10);
   }
   ctx.restore();
 }
 
-function drawLapCounter(){
-  ctx.fillStyle="white";
-  ctx.font="bold 28px Arial";
-  ctx.textAlign="center";
-  ctx.fillText("Laps: "+laps,centerX,centerY);
+function drawLapCounter() {
+  ctx.fillStyle = "white";
+  ctx.font = "bold 28px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("Laps: " + laps, centerX, centerY);
 }
 
-function drawHeatBar(){
+function drawHeatBar() {
   const w = 120;
-  const x = centerX-w/2;
+  const x = centerX - w / 2;
   const y = centerY - outerY - 40;
-  ctx.fillStyle="#333";
-  ctx.fillRect(x,y,w,10);
-  ctx.fillStyle = overheated ? "red":"orange";
-  ctx.fillRect(x,y,w*heat,10);
+  ctx.fillStyle = "#333";
+  ctx.fillRect(x, y, w, 10);
+  ctx.fillStyle = overheated ? "red" : "orange";
+  ctx.fillRect(x, y, w * heat, 10);
 }
 
 function updatePrices() {
-  document.getElementById("enginePrice").innerText = getUpgradePrice(engineLevel);
+  document.getElementById("enginePrice").innerText =
+    getUpgradePrice(engineLevel);
   document.getElementById("turboPrice").innerText = getUpgradePrice(turboLevel);
-  document.getElementById("suspensionPrice").innerText = getUpgradePrice(coolingLevel);
+  document.getElementById("suspensionPrice").innerText =
+    getUpgradePrice(coolingLevel);
 }
 
 // ===== логика =====
-function update(){
-  if(accelerating && !overheated){
-    speed += acceleration*(1-speed/maxSpeed);
+function update() {
+  if (accelerating && !overheated) {
+    speed += acceleration * (1 - speed / maxSpeed);
     heat += heatRate;
-    if(heat>=maxHeat){ heat=maxHeat; overheated=true; }
-  }else{
+    if (heat >= maxHeat) {
+      heat = maxHeat;
+      overheated = true;
+    }
+  } else {
     speed *= friction;
-    if(speed<baseSpeed) speed=baseSpeed;
+    if (speed < baseSpeed) speed = baseSpeed;
     heat -= coolRate;
-    if(heat<=0){ heat=0; overheated=false; }
+    if (heat <= 0) {
+      heat = 0;
+      overheated = false;
+    }
   }
 
   angle += speed;
-  if(angle>=Math.PI*2){
-    angle -= Math.PI*2;
+  if (angle >= Math.PI * 2) {
+    angle -= Math.PI * 2;
     laps++;
     coins++;
     updateCoinsUI();
@@ -238,8 +266,8 @@ function update(){
 }
 
 // ===== цикл =====
-function loop(){
-  ctx.clearRect(0,0,width,height);
+function loop() {
+  ctx.clearRect(0, 0, width, height);
   drawTrack();
   drawFinishLine();
   drawCar();
@@ -251,14 +279,13 @@ function loop(){
 
 // ===== старт =====
 window.addEventListener("DOMContentLoaded", () => {
-
   const engineImg = document.getElementById("engineImg");
   const turboImg = document.getElementById("turboImg");
   const suspensionImg = document.getElementById("suspensionImg");
 
   engineImg.onclick = () => {
     const price = getUpgradePrice(engineLevel);
-    if(coins>=price){
+    if (coins >= price) {
       coins -= price;
       engineLevel++;
       maxSpeed += ENGINE_BONUS;
@@ -270,7 +297,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   turboImg.onclick = () => {
     const price = getUpgradePrice(turboLevel);
-    if(coins>=price){
+    if (coins >= price) {
       coins -= price;
       turboLevel++;
       acceleration += TURBO_BONUS;
@@ -282,7 +309,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   suspensionImg.onclick = () => {
     const price = getUpgradePrice(coolingLevel);
-    if(coins>=price){
+    if (coins >= price) {
       coins -= price;
       coolingLevel++;
       coolRate += COOLING_BONUS;
