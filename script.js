@@ -62,6 +62,14 @@ const engineImg = document.getElementById("engineImg");
 const turboImg = document.getElementById("turboImg");
 const suspensionImg = document.getElementById("suspensionImg");
 
+function checkOrientation(){
+  if(window.innerWidth > window.innerHeight){
+    document.body.classList.add("landscape");
+  } else {
+    document.body.classList.remove("landscape");
+  }
+}
+
 function getUpgradePrice(level) {
   return 1 + (level - 1) * 3;
 }
@@ -267,6 +275,7 @@ function update() {
 
 // ===== цикл =====
 function loop() {
+  if(window.innerHeight > window.innerWidth) return;
   ctx.clearRect(0, 0, width, height);
   drawTrack();
   drawFinishLine();
@@ -278,6 +287,8 @@ function loop() {
 }
 
 // ===== старт =====
+window.addEventListener("resize", checkOrientation);
+window.addEventListener("DOMContentLoaded", checkOrientation);
 window.addEventListener("DOMContentLoaded", () => {
   const engineImg = document.getElementById("engineImg");
   const turboImg = document.getElementById("turboImg");
