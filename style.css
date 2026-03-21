@@ -1,4 +1,5 @@
-* {
+* 
+{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -13,6 +14,27 @@ body {
 
 canvas {
   display: block;
+}
+#rotateWarning{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  color: white;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 24px;
+  z-index: 9999;
+}
+
+/* скрываем когда горизонтально */
+.landscape #rotateWarning{
+  display: none;
 }
 
 #gasBtn {
