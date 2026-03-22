@@ -63,13 +63,15 @@ const turboImg = document.getElementById("turboImg");
 const suspensionImg = document.getElementById("suspensionImg");
 
 function checkOrientation(){
-  if(window.innerWidth > window.innerHeight){
-    document.body.classList.add("landscape");
+  if(window.innerHeight > window.innerWidth){
+    document.body.classList.add("portrait");
   } else {
-    document.body.classList.remove("landscape");
+    document.body.classList.remove("portrait");
   }
 }
 
+window.addEventListener("resize", checkOrientation);
+window.addEventListener("DOMContentLoaded", checkOrientation);
 function getUpgradePrice(level) {
   return 1 + (level - 1) * 3;
 }
@@ -275,7 +277,7 @@ function update() {
 
 // ===== цикл =====
 function loop() {
-  if(window.innerHeight > window.innerWidth) return;
+ if(window.innerWidth > window.innerHeight) return;
   ctx.clearRect(0, 0, width, height);
   drawTrack();
   drawFinishLine();
