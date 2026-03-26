@@ -120,13 +120,14 @@ function drawGarage(){
 }
 
 function isMobile() {
-  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  return window.innerWidth < 900;
 }
 
 function checkOrientation() {
   const warning = document.getElementById("rotateWarning");
+  if (!warning) return;
 
-  // ПК — всегда скрываем
+  // ПК — НИКОГДА не показываем
   if (!isMobile()) {
     warning.style.display = "none";
     return;
@@ -134,10 +135,10 @@ function checkOrientation() {
 
   // Телефон
   if (window.innerHeight > window.innerWidth) {
-    // вертикально → игра
+    // вертикально → норм
     warning.style.display = "none";
   } else {
-    // горизонтально → предупреждение
+    // горизонтально → показать
     warning.style.display = "flex";
   }
 }
