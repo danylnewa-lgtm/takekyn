@@ -157,3 +157,12 @@ canvas {
   top: 20px;
   left: 20px;
 }
+#upgradeScreen { display:none; }
+
+body.garage #upgradePanel{
+  display:flex;
+}
+
+body:not(.garage) #upgradePanel{
+  display:none;
+}
