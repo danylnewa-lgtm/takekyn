@@ -62,8 +62,19 @@ const engineImg = document.getElementById("engineImg");
 const turboImg = document.getElementById("turboImg");
 const suspensionImg = document.getElementById("suspensionImg");
 
-function checkOrientation(){
-  if(window.innerHeight > window.innerWidth){
+function isMobile() {
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+}
+
+function checkOrientation() {
+  if (!isMobile()) {
+    // ПК — всегда разрешаем
+    document.body.classList.add("portrait");
+    return;
+  }
+
+  // Только для телефонов проверяем ориентацию
+  if (window.innerHeight > window.innerWidth) {
     document.body.classList.add("portrait");
   } else {
     document.body.classList.remove("portrait");
@@ -277,7 +288,7 @@ function update() {
 
 // ===== цикл =====
 function loop() {
-  if(window.innerWidth > window.innerHeight){
+if(isMobile() && window.innerWidth > window.innerHeight){
     requestAnimationFrame(loop);
     return;
   }
