@@ -116,22 +116,23 @@ function isMobile() {
 }
 
 function checkOrientation() {
+  const warning = document.getElementById("rotateWarning");
+
+  // ПК — всегда скрываем
   if (!isMobile()) {
-    // ПК — всегда разрешаем
-    document.body.classList.add("portrait");
+    warning.style.display = "none";
     return;
   }
 
-  // Только для телефонов проверяем ориентацию
+  // Телефон
   if (window.innerHeight > window.innerWidth) {
-    document.body.classList.add("portrait");
+    // вертикально → игра
+    warning.style.display = "none";
   } else {
-    document.body.classList.remove("portrait");
+    // горизонтально → предупреждение
+    warning.style.display = "flex";
   }
 }
-
-window.addEventListener("resize", checkOrientation);
-window.addEventListener("DOMContentLoaded", checkOrientation);
 function getUpgradePrice(level) {
   return 1 + (level - 1) * 3;
 }
