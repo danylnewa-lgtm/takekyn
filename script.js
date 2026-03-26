@@ -193,12 +193,20 @@ function checkOrientation() {
 canvas.style.display = "block";
 warning.style.display = "none";
 
-  
+}
+
+// ===== функции апгрейдов =====
 function getUpgradePrice(level) {
   return 1 + (level - 1) * 3;
 }
 
-
+function loadProgress() {
+  coins = parseInt(localStorage.getItem("coins")) || 0;
+  engineLevel = parseInt(localStorage.getItem("engineLevel")) || 1;
+  turboLevel = parseInt(localStorage.getItem("turboLevel")) || 1;
+  coolingLevel = parseInt(localStorage.getItem("coolingLevel")) || 1;
+  laps = parseInt(localStorage.getItem("laps")) || 0;
+}
 
 // ===== UI =====
 function updateCoinsUI() {
