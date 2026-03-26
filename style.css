@@ -1,4 +1,6 @@
 * 
+  display: none;
+}
 {
   margin: 0;
   padding: 0;
@@ -194,4 +196,10 @@ body.garage #upgradeScreen {
   position: absolute;
   top: 20px;
   left: 20px;
+}
+body.garage canvas,
+body.garage #gasBtn,
+body.garage #upgradePanel,
+body.garage #openUpgradesBtn {
+  display: none;
 }
