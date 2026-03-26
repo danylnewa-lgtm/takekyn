@@ -4,13 +4,17 @@ const ctx = canvas.getContext("2d");
 const garageBtn = document.getElementById("openUpgradesBtn");
 const backBtn = document.getElementById("backBtn");
 
-garageBtn.onclick = () => {
-  gameState = "garage";
-};
 
-backBtn.onclick = () => {
-  gameState = "game";
-};
+const canvas = document.getElementById("gameCanvas");
+
+if (window.innerHeight > window.innerWidth) {
+  warning.style.display = "none";
+  canvas.style.display = "block";
+} else {
+  warning.style.display = "flex";
+  canvas.style.display = "none";
+}
+
 // ===== размеры =====
 let width, height;
 let centerX, centerY;
@@ -120,7 +124,7 @@ function drawGarage(){
 }
 
 function isMobile() {
-  return window.innerWidth < 900;
+  return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
 function checkOrientation() {
