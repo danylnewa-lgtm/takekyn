@@ -71,11 +71,64 @@ const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
 
-// ===== апгрейды через картинки =====
-const engineImg = document.getElementById("engineImg");
-const turboImg = document.getElementById("turboImg");
-const suspensionImg = document.getElementById("suspensionImg");
+// ===== апгрейды через картинки (панель) =====
+const engineImgPanel = document.getElementById("engineImgPanel");
+const turboImgPanel = document.getElementById("turboImgPanel");
+const suspensionImgPanel = document.getElementById("suspensionImgPanel");
 
+// ===== апгрейды через картинки (экран) =====
+const engineImgScreen = document.getElementById("engineImgScreen");
+const turboImgScreen = document.getElementById("turboImgScreen");
+const suspensionImgScreen = document.getElementById("suspensionImgScreen");
+
+// ===== обработка кликов (панель) =====
+engineImgPanel.onclick = () => upgradeEngine();
+turboImgPanel.onclick = () => upgradeTurbo();
+suspensionImgPanel.onclick = () => upgradeCooling();
+
+// ===== обработка кликов (экран) =====
+engineImgScreen.onclick = () => upgradeEngine();
+turboImgScreen.onclick = () => upgradeTurbo();
+suspensionImgScreen.onclick = () => upgradeCooling();
+
+// ===== функции апгрейдов =====
+function upgradeEngine() {
+  const price = getUpgradePrice(engineLevel);
+  if (coins >= price) {
+    coins -= price;
+    engineLevel++;
+    maxSpeed += ENGINE_BONUS;
+    saveProgress();
+    updateCoinsUI();
+    updatePrices();
+  }
+}
+
+function upgradeTurbo() {
+  const price = getUpgradePrice(turboLevel);
+  if (coins >= price) {
+    coins -= price;
+    turboLevel++;
+    acceleration += TURBO_BONUS;
+    saveProgress();
+    updateCoinsUI();
+    updatePrices();
+  }
+}
+
+function upgradeCooling() {
+  const price = getUpgradePrice(coolingLevel);
+  if (coins >= price) {
+    coins -= price;
+    coolingLevel++;
+    coolRate += COOLING_BONUS;
+    heatRate -= HEAT_REDUCTION;
+    if (heatRate < 0.001) heatRate = 0.001;
+    saveProgress();
+    updateCoinsUI();
+    updatePrices();
+  }
+}
 function updateUIState(){
   if(gameState === "garage"){
     document.body.classList.add("garage");
@@ -148,38 +201,7 @@ function getUpgradePrice(level) {
   return 1 + (level - 1) * 3;
 }
 
-engineImg.onclick = () => {
-  const price = getUpgradePrice(engineLevel);
-  if (coins >= price) {
-    coins -= price;
-    engineLevel++;
-    maxSpeed += ENGINE_BONUS;
-    saveProgress();
-    updateCoinsUI();
-  }
-};
-turboImg.onclick = () => {
-  const price = getUpgradePrice(turboLevel);
-  if (coins >= price) {
-    coins -= price;
-    turboLevel++;
-    acceleration += TURBO_BONUS;
-    saveProgress();
-    updateCoinsUI();
-  }
-};
-suspensionImg.onclick = () => {
-  const price = getUpgradePrice(coolingLevel);
-  if (coins >= price) {
-    coins -= price;
-    coolingLevel++;
-    coolRate += COOLING_BONUS;
-    heatRate -= HEAT_REDUCTION;
-    if (heatRate < 0.001) heatRate = 0.001;
-    saveProgress();
-    updateCoinsUI();
-  }
-};
+
 
 // ===== UI =====
 function updateCoinsUI() {
