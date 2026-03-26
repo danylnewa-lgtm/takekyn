@@ -68,21 +68,6 @@ let overheated = false;
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
-const upgradeScreen = document.getElementById("upgradeScreen");
-const openBtn = document.getElementById("openUpgradesBtn");
-const backBtn = document.getElementById("backBtn");
-
-let inUpgradeScreen = false;
-
-openBtn.onclick = () => {
-  upgradeScreen.classList.remove("hidden");
-  inUpgradeScreen = true;
-};
-
-backBtn.onclick = () => {
-  upgradeScreen.classList.add("hidden");
-  inUpgradeScreen = false;
-};
 
 // ===== апгрейды через картинки =====
 const engineImg = document.getElementById("engineImg");
@@ -90,12 +75,15 @@ const turboImg = document.getElementById("turboImg");
 const suspensionImg = document.getElementById("suspensionImg");
 
 function updateUIState(){
-  if(gameState === "garage"){
-    document.body.classList.add("garage");
-  } else {
-    document.body.classList.remove("garage");
-  }
-}
+garageBtn.onclick = () => {
+  gameState = "garage";
+  updateUIState();
+};
+
+backBtn.onclick = () => {
+  gameState = "game";
+  updateUIState();
+};
 
 function drawGarage(){
   // фон
@@ -349,11 +337,16 @@ function update() {
 
 // ===== цикл =====
 function loop() {
-if(isMobile() && window.innerWidth > window.innerHeight){
+
+  // блок поворота
+  if (isMobile() && window.innerWidth > window.innerHeight) {
     requestAnimationFrame(loop);
     return;
+  }
+
   ctx.clearRect(0, 0, width, height);
-  if(gameState === "game"){
+
+  if (gameState === "game") {
     drawTrack();
     drawFinishLine();
     drawCar();
@@ -362,13 +355,12 @@ if(isMobile() && window.innerWidth > window.innerHeight){
     update();
   }
 
-  if(gameState === "garage"){
+  if (gameState === "garage") {
     drawGarage();
   }
 
   requestAnimationFrame(loop);
 }
-
 // ===== старт =====
 window.addEventListener("resize", checkOrientation);
 window.addEventListener("DOMContentLoaded", checkOrientation);
