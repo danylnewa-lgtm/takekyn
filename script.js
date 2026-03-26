@@ -180,21 +180,52 @@ function isMobile() {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
 
+// ===== проверка ориентации и отображения canvas =====
 function checkOrientation() {
   const warning = document.getElementById("rotateWarning");
   if (!warning) return;
 
-  // ПК — НИКОГДА не показываем
   if (!isMobile()) {
+    // ПК: всегда показываем canvas, warning скрыт
     warning.style.display = "none";
+    canvas.style.display = "block";
     return;
   }
 
-canvas.style.display = "block";
-warning.style.display = "none";
-
+  // Мобильные устройства
+  if (window.innerHeight < window.innerWidth) {
+    // альбомная ориентация
+    warning.style.display = "flex";
+    canvas.style.display = "none";
+  } else {
+    // портретная ориентация
+    warning.style.display = "none";
+    canvas.style.display = "block";
+  }
 }
 
+// ===== загрузка картинки машины =====
+carImg.onload = () => {
+  // если хотим, можно сразу перерисовать гараж
+  if (gameState === "garage") drawGarage();
+};
+
+// ===== старт игры =====
+window.addEventListener("DOMContentLoaded", () => {
+  loadProgress();
+  updateCoinsUI();
+  updatePrices();
+  updateUIState();
+  resize();
+  checkOrientation(); // теперь проверка ориентации идёт сразу
+  loop();
+});
+
+// ===== обработка ресайза =====
+window.addEventListener("resize", () => {
+  resize();
+  checkOrientation();
+});
 // ===== функции апгрейдов =====
 function getUpgradePrice(level) {
   return 1 + (level - 1) * 3;
