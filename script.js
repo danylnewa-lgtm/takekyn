@@ -398,13 +398,13 @@ window.addEventListener("resize", () => {
   resize();
 });
 window.addEventListener("DOMContentLoaded", checkOrientation);
+// конец файла
 window.addEventListener("DOMContentLoaded", () => {
   loadProgress();
   updateCoinsUI();
   updatePrices();
-
-  updateUIState(); // ВАЖНО
-
+  updateUIState();
   resize();
   loop();
 });
+
