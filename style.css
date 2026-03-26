@@ -197,9 +197,3 @@ body.garage #upgradeScreen {
   top: 20px;
   left: 20px;
 }
-body.garage canvas,
-body.garage #gasBtn,
-body.garage #upgradePanel,
-body.garage #openUpgradesBtn {
-  display: none;
-}
