@@ -19,23 +19,6 @@ let centerX, centerY;
 let outerX, outerY;
 let innerX, innerY;
 
-function resize() {
-  width = window.innerWidth;
-  height = window.innerHeight;
-  canvas.width = width;
-  canvas.height = height;
-
-  const size = Math.min(width, height);
-
-  outerX = outerY = size * 0.4;
-  innerX = innerY = outerX * 0.6;
-
-  centerX = width / 2;
-  centerY = height / 2;
-}
-resize();
-window.addEventListener("resize", resize);
-
 // ===== движение =====
 let angle = 0;
 let baseSpeed = 0.001;
@@ -88,6 +71,24 @@ if (suspensionImgPanel) suspensionImgPanel.onclick = upgradeCooling;
 if (engineImgScreen) engineImgScreen.onclick = upgradeEngine;
 if (turboImgScreen) turboImgScreen.onclick = upgradeTurbo;
 if (suspensionImgScreen) suspensionImgScreen.onclick = upgradeCooling;
+
+function resize() {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  const size = Math.min(width, height);
+
+  outerX = outerY = size * 0.4;
+  innerX = innerY = outerX * 0.6;
+
+  centerX = width / 2;
+  centerY = height / 2;
+}
+resize();
+window.addEventListener("resize", resize);
+
 // ===== функции апгрейдов =====
 function upgradeEngine() {
   const price = getUpgradePrice(engineLevel);
