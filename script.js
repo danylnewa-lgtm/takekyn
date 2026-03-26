@@ -222,13 +222,6 @@ function saveProgress() {
   localStorage.setItem("coolingLevel", coolingLevel);
   localStorage.setItem("laps", laps);
 }
-function loadProgress() {
-  coins = parseInt(localStorage.getItem("coins")) || 0;
-  engineLevel = parseInt(localStorage.getItem("engineLevel")) || 1;
-  turboLevel = parseInt(localStorage.getItem("turboLevel")) || 1;
-  coolingLevel = parseInt(localStorage.getItem("coolingLevel")) || 1;
-  laps = parseInt(localStorage.getItem("laps")) || 0;
-}
 
 // ===== кнопка газа =====
 const gasBtn = document.getElementById("gasBtn");
@@ -345,7 +338,6 @@ function updatePrices() {
     getUpgradePrice(coolingLevel);
 }
 
-// ===== логика =====
 function update() {
   if (accelerating && !overheated) {
     speed += acceleration * (1 - speed / maxSpeed);
@@ -363,7 +355,8 @@ function update() {
       overheated = false;
     }
   }
-}
+
+  // движение и прогресс
   angle += speed;
   if (angle >= Math.PI * 2) {
     angle -= Math.PI * 2;
