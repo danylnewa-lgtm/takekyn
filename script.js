@@ -387,6 +387,7 @@ function loop() {
     drawLapCounter();
     drawHeatBar();
     update();
+    
   }
 
   if (gameState === "garage") {
