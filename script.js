@@ -354,7 +354,7 @@ function update() {
       overheated = false;
     }
   }
-
+}
   angle += speed;
   if (angle >= Math.PI * 2) {
     angle -= Math.PI * 2;
