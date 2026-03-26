@@ -32,10 +32,6 @@ canvas {
   z-index: 9999;
 }
 
-/* Скрываем, когда ВЕРТИКАЛЬНО */
-.portrait #rotateWarning{
-  display: none;
-}
 
 #gasBtn {
   position: fixed;
