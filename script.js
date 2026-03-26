@@ -75,6 +75,14 @@ const turboImg = document.getElementById("turboImg");
 const suspensionImg = document.getElementById("suspensionImg");
 
 function updateUIState(){
+  if(gameState === "garage"){
+    document.body.classList.add("garage");
+  } else {
+    document.body.classList.remove("garage");
+  }
+}
+
+// обработчики ВНЕ функции
 garageBtn.onclick = () => {
   gameState = "garage";
   updateUIState();
@@ -363,14 +371,14 @@ function loop() {
   requestAnimationFrame(loop);
 }
 // ===== старт =====
-window.addEventListener("resize", checkOrientation);
+ window.addEventListener("resize", checkOrientation);
 window.addEventListener("DOMContentLoaded", checkOrientation);
 window.addEventListener("DOMContentLoaded", () => {
- 
-
   loadProgress();
   updateCoinsUI();
   updatePrices();
+
+  updateUIState(); // ВАЖНО
 
   resize();
   loop();
