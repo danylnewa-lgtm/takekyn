@@ -1,11 +1,22 @@
+let gameState = "game"; // "game" или "garage"
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
+const garageBtn = document.getElementById("openUpgradesBtn");
+const backBtn = document.getElementById("backBtn");
 
+garageBtn.onclick = () => {
+  gameState = "garage";
+};
+
+backBtn.onclick = () => {
+  gameState = "game";
+};
 // ===== размеры =====
 let width, height;
 let centerX, centerY;
 let outerX, outerY;
 let innerX, innerY;
+
 function resize() {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -57,10 +68,60 @@ let overheated = false;
 const carImg = new Image();
 carImg.src = "assets/images/car.png";
 
+const upgradeScreen = document.getElementById("upgradeScreen");
+const openBtn = document.getElementById("openUpgradesBtn");
+const backBtn = document.getElementById("backBtn");
+
+let inUpgradeScreen = false;
+
+openBtn.onclick = () => {
+  upgradeScreen.classList.remove("hidden");
+  inUpgradeScreen = true;
+};
+
+backBtn.onclick = () => {
+  upgradeScreen.classList.add("hidden");
+  inUpgradeScreen = false;
+};
+
 // ===== апгрейды через картинки =====
 const engineImg = document.getElementById("engineImg");
 const turboImg = document.getElementById("turboImg");
 const suspensionImg = document.getElementById("suspensionImg");
+
+function updateUIState(){
+  if(gameState === "garage"){
+    document.body.classList.add("garage");
+  } else {
+    document.body.classList.remove("garage");
+  }
+}
+
+function drawGarage(){
+  // фон
+  ctx.fillStyle = "#111";
+  ctx.fillRect(0, 0, width, height);
+
+  // заголовок
+  ctx.fillStyle = "white";
+  ctx.font = "bold 32px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText("GARAGE", centerX, 80);
+
+  // машина по центру
+  if(carImg.complete){
+    ctx.drawImage(carImg, centerX - 60, centerY - 30, 120, 60);
+  }
+
+  // инфа
+  ctx.font = "20px Arial";
+  ctx.fillText("Coins: " + coins, centerX, centerY + 100);
+
+  // уровни
+  ctx.fillText("Engine Lv." + engineLevel, centerX, centerY + 140);
+  ctx.fillText("Turbo Lv." + turboLevel, centerX, centerY + 170);
+  ctx.fillText("Cooling Lv." + coolingLevel, centerX, centerY + 200);
+}
 
 function isMobile() {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -291,15 +352,19 @@ function loop() {
 if(isMobile() && window.innerWidth > window.innerHeight){
     requestAnimationFrame(loop);
     return;
+  ctx.clearRect(0, 0, width, height);
+  if(gameState === "game"){
+    drawTrack();
+    drawFinishLine();
+    drawCar();
+    drawLapCounter();
+    drawHeatBar();
+    update();
   }
 
-  ctx.clearRect(0, 0, width, height);
-  drawTrack();
-  drawFinishLine();
-  drawCar();
-  drawLapCounter();
-  drawHeatBar();
-  update();
+  if(gameState === "garage"){
+    drawGarage();
+  }
 
   requestAnimationFrame(loop);
 }
