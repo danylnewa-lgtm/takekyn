@@ -277,7 +277,11 @@ function update() {
 
 // ===== цикл =====
 function loop() {
- if(window.innerWidth > window.innerHeight) return;
+  if(window.innerWidth > window.innerHeight){
+    requestAnimationFrame(loop);
+    return;
+  }
+
   ctx.clearRect(0, 0, width, height);
   drawTrack();
   drawFinishLine();
@@ -285,6 +289,7 @@ function loop() {
   drawLapCounter();
   drawHeatBar();
   update();
+
   requestAnimationFrame(loop);
 }
 
@@ -292,47 +297,7 @@ function loop() {
 window.addEventListener("resize", checkOrientation);
 window.addEventListener("DOMContentLoaded", checkOrientation);
 window.addEventListener("DOMContentLoaded", () => {
-  const engineImg = document.getElementById("engineImg");
-  const turboImg = document.getElementById("turboImg");
-  const suspensionImg = document.getElementById("suspensionImg");
-
-  engineImg.onclick = () => {
-    const price = getUpgradePrice(engineLevel);
-    if (coins >= price) {
-      coins -= price;
-      engineLevel++;
-      maxSpeed += ENGINE_BONUS;
-      saveProgress();
-      updateCoinsUI();
-      updatePrices();
-    }
-  };
-
-  turboImg.onclick = () => {
-    const price = getUpgradePrice(turboLevel);
-    if (coins >= price) {
-      coins -= price;
-      turboLevel++;
-      acceleration += TURBO_BONUS;
-      saveProgress();
-      updateCoinsUI();
-      updatePrices();
-    }
-  };
-
-  suspensionImg.onclick = () => {
-    const price = getUpgradePrice(coolingLevel);
-    if (coins >= price) {
-      coins -= price;
-      coolingLevel++;
-      coolRate += COOLING_BONUS;
-      heatRate -= HEAT_REDUCTION;
-      if (heatRate < 0.001) heatRate = 0.001;
-      saveProgress();
-      updateCoinsUI();
-      updatePrices();
-    }
-  };
+ 
 
   loadProgress();
   updateCoinsUI();
