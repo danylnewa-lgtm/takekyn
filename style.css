@@ -16,6 +16,7 @@ canvas {
   display: block;
 }
 #rotateWarning{
+  display: none; /* было flex — ЭТО ПРОБЛЕМА */
   position: fixed;
   top: 0;
   left: 0;
@@ -24,14 +25,12 @@ canvas {
   background: #111;
   color: white;
 
-  display: flex;
   align-items: center;
   justify-content: center;
 
   font-size: 22px;
   z-index: 9999;
 }
-
 
 #gasBtn {
   position: fixed;
