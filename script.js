@@ -3,9 +3,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 const garageBtn = document.getElementById("openUpgradesBtn");
 const backBtn = document.getElementById("backBtn");
-
-
-const canvas = document.getElementById("gameCanvas");
+const warning = document.getElementById("rotateWarning");
 
 if (window.innerHeight > window.innerWidth) {
   warning.style.display = "none";
@@ -376,7 +374,10 @@ function loop() {
   requestAnimationFrame(loop);
 }
 // ===== старт =====
- window.addEventListener("resize", checkOrientation);
+window.addEventListener("resize", () => {
+  checkOrientation();
+  resize();
+});
 window.addEventListener("DOMContentLoaded", checkOrientation);
 window.addEventListener("DOMContentLoaded", () => {
   loadProgress();
