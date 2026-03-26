@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -7,62 +6,64 @@
 <title>Track</title>
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <div id="rotateWarning">
+
+<div id="rotateWarning">
   Поверни телефон вертикально
 </div>
+
+<!-- ===== ИГРОВАЯ ПАНЕЛЬ ===== -->
 <div id="upgradePanel">
 
-  <div class="upgradeItem" id="engineItem">
-    <img id="engineImg" src="assets/images/laps.png">
+  <div class="upgradeItem">
+    <img id="engineImgPanel" src="assets/images/laps.png">
     <div class="price" id="enginePrice"></div>
   </div>
 
-  <div class="upgradeItem" id="turboItem">
-    <img id="turboImg" src="assets/images/turbo.png">
+  <div class="upgradeItem">
+    <img id="turboImgPanel" src="assets/images/turbo.png">
     <div class="price" id="turboPrice"></div>
   </div>
 
-  <div class="upgradeItem" id="suspensionItem">
-    <img id="suspensionImg" src="assets/images/podves.png">
+  <div class="upgradeItem">
+    <img id="suspensionImgPanel" src="assets/images/podves.png">
     <div class="price" id="suspensionPrice"></div>
   </div>
 
   <div id="coinsUI">Coins: 0</div>
 </div>
-  
+
 <button id="gasBtn">GAS</button>
-<canvas id="gameCanvas"></canvas>
-
-<script src="script.js"></script>
-</body>
-</html>
-
-<!-- Панель апгрейдов -->
-<img id="engineImgPanel" src="assets/images/laps.png">
-<div id="enginePricePanel"></div>
-
-<!-- Экран апгрейдов -->
-<img id="engineImgScreen" src="assets/images/laps.png">
-<div id="enginePriceScreen"></div>
-
 <button id="openUpgradesBtn">UPGRADES</button>
 
+<canvas id="gameCanvas"></canvas>
+
+<!-- ===== ЭКРАН ГАРАЖА ===== -->
+<div id="upgradeScreen" class="hidden">
+
+  <button id="backBtn">← BACK</button>
 
   <div class="upgradeGrid">
+
     <div class="upgradeItem">
-      <img id="engineImg" src="assets/images/laps.png">
+      <img id="engineImgScreen" src="assets/images/laps.png">
       <div class="price" id="enginePrice"></div>
     </div>
 
     <div class="upgradeItem">
-      <img id="turboImg" src="assets/images/turbo.png">
+      <img id="turboImgScreen" src="assets/images/turbo.png">
       <div class="price" id="turboPrice"></div>
     </div>
 
     <div class="upgradeItem">
-      <img id="suspensionImg" src="assets/images/podves.png">
+      <img id="suspensionImgScreen" src="assets/images/podves.png">
       <div class="price" id="suspensionPrice"></div>
     </div>
+
   </div>
 </div>
+
+<script src="script.js"></script>
+</body>
+</html>
