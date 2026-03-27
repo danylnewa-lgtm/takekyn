@@ -153,8 +153,8 @@ canvas {
   left: 20px;
 }
 
-body.garage #upgradePanel{
-  display:flex;
+#upgradeScreen {
+  display: none !important;
 }
 
 body:not(.garage) #upgradePanel{
