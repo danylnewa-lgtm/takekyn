@@ -72,6 +72,16 @@ if (engineImgScreen) engineImgScreen.onclick = upgradeEngine;
 if (turboImgScreen) turboImgScreen.onclick = upgradeTurbo;
 if (suspensionImgScreen) suspensionImgScreen.onclick = upgradeCooling;
 
+canvas.addEventListener("click", (e) => {
+  if(gameState !== "garage") return;
+
+  const rect = canvas.getBoundingClientRect();
+  const mouseX = e.clientX - rect.left;
+  const mouseY = e.clientY - rect.top;
+
+  checkUpgradeClick(mouseX, mouseY);
+});
+
 function resize() {
   width = window.innerWidth;
   height = window.innerHeight;
@@ -149,7 +159,6 @@ if (backBtn) {
     updateUIState();
   };
 }
-
 function drawGarage(){
   // фон
   ctx.fillStyle = "#111";
@@ -157,25 +166,69 @@ function drawGarage(){
 
   // заголовок
   ctx.fillStyle = "white";
-  ctx.font = "bold 32px Arial";
+  ctx.font = "bold 36px Arial";
   ctx.textAlign = "center";
-  ctx.fillText("GARAGE", centerX, 80);
+  ctx.fillText("GARAGE", centerX, 60);
 
-  // машина по центру
+  // машина
   if(carImg.complete){
-    ctx.drawImage(carImg, centerX - 60, centerY - 30, 120, 60);
+    ctx.drawImage(carImg, centerX - 100, centerY - 80, 200, 100);
   }
 
-  // инфа
-  ctx.font = "20px Arial";
-  ctx.fillText("Coins: " + coins, centerX, centerY + 100);
+  // монеты
+  ctx.fillStyle = "gold";
+  ctx.font = "24px Arial";
+  ctx.fillText("Coins: " + coins, centerX, centerY + 120);
 
-  // уровни
-  ctx.fillText("Engine Lv." + engineLevel, centerX, centerY + 140);
-  ctx.fillText("Turbo Lv." + turboLevel, centerX, centerY + 170);
-  ctx.fillText("Cooling Lv." + coolingLevel, centerX, centerY + 200);
+  // блоки апгрейдов
+  drawUpgradeCard(centerX - 200, centerY + 160, "ENGINE", engineLevel);
+  drawUpgradeCard(centerX, centerY + 160, "TURBO", turboLevel);
+  drawUpgradeCard(centerX + 200, centerY + 160, "COOLING", coolingLevel);
 }
 
+function checkUpgradeClick(mx, my){
+  if(isInside(mx, my, centerX - 200, centerY + 160)){
+    upgradeEngine();
+  }
+  else if(isInside(mx, my, centerX, centerY + 160)){
+    upgradeTurbo();
+  }
+  else if(isInside(mx, my, centerX + 200, centerY + 160)){
+    upgradeCooling();
+  }
+}
+
+function isInside(mx, my, x, y){
+  return (
+    mx > x - 80 &&
+    mx < x + 80 &&
+    my > y - 40 &&
+    my < y + 40
+  );
+}
+
+function drawUpgradeCard(x, y, title, level){
+  const price = getUpgradePrice(level);
+
+  // фон карточки
+  ctx.fillStyle = coins >= price ? "#2a2a2a" : "#1a1a1a";
+  ctx.fillRect(x - 80, y - 40, 160, 80);
+
+  // рамка
+  ctx.strokeStyle = coins >= price ? "gold" : "#555";
+  ctx.strokeRect(x - 80, y - 40, 160, 80);
+
+  // текст
+  ctx.fillStyle = "white";
+  ctx.font = "18px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(title, x, y - 10);
+
+  ctx.fillText("Lv." + level, x, y + 10);
+
+  ctx.fillStyle = "gold";
+  ctx.fillText(price + "$", x, y + 30);
+}
 function isMobile() {
   return /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 }
@@ -426,6 +479,7 @@ function loop() {
   requestAnimationFrame(loop);
 }
 // ===== старт =====
+
 window.addEventListener("resize", () => {
   checkOrientation();
   resize();
